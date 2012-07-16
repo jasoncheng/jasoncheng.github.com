@@ -4,7 +4,7 @@
   <title><![CDATA[Category: GSON | 鄭傑森的 "扣"]]></title>
   <link href="http://jasoncheng.github.com/blog/categories/gson/atom.xml" rel="self"/>
   <link href="http://jasoncheng.github.com/"/>
-  <updated>2012-07-17T01:19:31+08:00</updated>
+  <updated>2012-07-17T01:20:57+08:00</updated>
   <id>http://jasoncheng.github.com/</id>
   <author>
     <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
@@ -40,7 +40,7 @@ this.func = obj.getInt(ApiConsts.TAG_FUNC);
 }
 ```</p>
 
-<h3>如果改用GSON後, Code就乾淨許多</h3>
+<h3>如果改用GSON後, Code就乾淨許多; 不用在那邊getter來 setter去</h3>
 
 <p>``` javascript datasource.js
 {"system":[

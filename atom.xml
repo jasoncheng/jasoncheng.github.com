@@ -4,7 +4,7 @@
   <title><![CDATA[鄭傑森的 "扣"]]></title>
   <link href="http://jasoncheng.github.com/atom.xml" rel="self"/>
   <link href="http://jasoncheng.github.com/"/>
-  <updated>2012-07-17T01:19:31+08:00</updated>
+  <updated>2012-07-17T01:20:57+08:00</updated>
   <id>http://jasoncheng.github.com/</id>
   <author>
     <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
@@ -47,7 +47,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3>如果改用GSON後, Code就乾淨許多</h3>
+<h3>如果改用GSON後, Code就乾淨許多; 不用在那邊getter來 setter去</h3>
 
 <figure class='code'><figcaption><span>datasource.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
