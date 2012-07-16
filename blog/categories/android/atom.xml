@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Android | 鄭傑森的 "扣"]]></title>
   <link href="http://jasoncheng.github.com/blog/categories/android/atom.xml" rel="self"/>
   <link href="http://jasoncheng.github.com/"/>
-  <updated>2012-07-17T01:20:57+08:00</updated>
+  <updated>2012-07-17T01:24:49+08:00</updated>
   <id>http://jasoncheng.github.com/</id>
   <author>
     <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
@@ -93,7 +93,9 @@ for(TagObj obj: objs){
 }
 </code></p>
 
-<p>參考: <a href="http://code.google.com/p/google-gson/" title="Google GSON">GSON</a></p>
+<p>既然Google都有這樣方便的工具了, 那就偷懶的直接用吧! <strong>沒事不要再造一堆輪子</strong></p>
+
+<p><a href="http://code.google.com/p/google-gson/" title="Google GSON">GSON</a></p>
 ]]></content>
   </entry>
   
