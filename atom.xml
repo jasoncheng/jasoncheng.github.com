@@ -4,7 +4,7 @@
   <title><![CDATA[鄭傑森的 "扣"]]></title>
   <link href="http://jasoncheng.github.com/atom.xml" rel="self"/>
   <link href="http://jasoncheng.github.com/"/>
-  <updated>2012-07-17T01:15:49+08:00</updated>
+  <updated>2012-07-17T01:19:31+08:00</updated>
   <id>http://jasoncheng.github.com/</id>
   <author>
     <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
@@ -49,8 +49,6 @@
 
 <h3>如果改用GSON後, Code就乾淨許多</h3>
 
-<p>@SerializedName 這個annotation 就是你的JSON Object的key</p>
-
 <figure class='code'><figcaption><span>datasource.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -91,7 +89,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-
+<p>@SerializedName 這個annotation 就是你的JSON Object的key</p>
 
 <figure class='code'><figcaption><span>TagObj.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>

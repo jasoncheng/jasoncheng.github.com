@@ -4,7 +4,7 @@
   <title><![CDATA[Category: GSON | 鄭傑森的 "扣"]]></title>
   <link href="http://jasoncheng.github.com/blog/categories/gson/atom.xml" rel="self"/>
   <link href="http://jasoncheng.github.com/"/>
-  <updated>2012-07-17T01:15:49+08:00</updated>
+  <updated>2012-07-17T01:19:31+08:00</updated>
   <id>http://jasoncheng.github.com/</id>
   <author>
     <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
@@ -42,8 +42,6 @@ this.func = obj.getInt(ApiConsts.TAG_FUNC);
 
 <h3>如果改用GSON後, Code就乾淨許多</h3>
 
-<p>@SerializedName 這個annotation 就是你的JSON Object的key</p>
-
 <p>``` javascript datasource.js
 {"system":[
   {"tag":"6",</p>
@@ -72,7 +70,8 @@ public class TagObjMgr {
 }
 </code></p>
 
-<p>``` java  TagObj.java
+<p>@SerializedName 這個annotation 就是你的JSON Object的key
+``` java  TagObj.java
 public class TagObj {
   @SerializedName("id")
   public int id;</p>
