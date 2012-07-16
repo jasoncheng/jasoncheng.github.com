@@ -5,14 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>鄭傑森的 "扣"</title>
+  <title>Category: linux - 鄭傑森的 "扣"</title>
   <meta name="google-site-verification" content="PxaXwTiThegfVD4OQrn7nNOgfiBfwMMnSR1DEKk9VVo" />
   <meta name="author" content="JasonCheng 17hado.com(@)gmail.com">
 
   
-  <meta name="description" content="最近常遇到 Too many open files 的錯誤訊息, 不管是 memcached / nodejs ..
-這跟Server上面的ulimit有關. 必須調整1024(預設)值. 顯示目前限制 1
-$ulimit -a 編輯 /etc/pam.d/common-session, 加上 1 &hellip;">
+  <meta name="description" content="Category: linux">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -21,7 +19,7 @@ $ulimit -a 編輯 /etc/pam.d/common-session, 加上 1 &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jasoncheng.github.com/">
+  <link rel="canonical" href="http://jasoncheng.github.comblog/categories/linux/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -77,89 +75,40 @@ $ulimit -a 編輯 /etc/pam.d/common-session, 加上 1 &hellip;">
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article role="article">
   
-  
-  
-    <article>
-      
   <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/16/too-many-open-files/">Too Many Open Files</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-16T22:03:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2012</time>
-        
-      </p>
+    <h1 class="entry-title">Category: Linux</h1>
     
   </header>
+  
+  <div id="blog-archives" class="category">
 
 
-  <div class="entry-content"><p>最近常遇到 Too many open files 的錯誤訊息, 不管是 memcached / nodejs ..
-這跟Server上面的ulimit有關. 必須調整1024(預設)值.</p>
 
-<p>顯示目前限制</p>
+  
+  <h2>2012</h2>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ulimit</span> -a
-</span></code></pre></td></tr></table></div></figure>
+<article>
+  
+<h1><a href="/blog/2012/07/16/too-many-open-files/">Too many open files</a></h1>
+<time datetime="2012-07-16T22:03:00+08:00" pubdate><span class='month'>Jul</span> <span class='day'>16</span> <span class='year'>2012</span></time>
 
-
-<p>編輯 /etc/pam.d/common-session, 加上</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>session required pam_limits.so
-</span></code></pre></td></tr></table></div></figure>
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/apache/'>apache</a>, <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/nodejs/'>nodejs</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>, <a class='category' href='/blog/categories/ulimit/'>ulimit</a></span>
+</footer>
 
 
-<p>編輯 /etc/security/limits.conf</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>* soft nofile 51200
-</span><span class='line'>* hard nofile 51200
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>編輯 /etc/profile</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">ulimit</span> -SHn 51200
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>執行</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">ulimit</span> -SHn 51200
-</span></code></pre></td></tr></table></div></figure>
+</article>
 
 </div>
-  
-  
 
-
-    </article>
   
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+</article>
+
 </div>
+
 <aside class="sidebar">
   
     <section>
@@ -181,7 +130,7 @@ $ulimit -a 編輯 /etc/pam.d/common-session, 加上 1 &hellip;">
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/jasoncheng">@jasoncheng</a> on GitHub
@@ -211,7 +160,7 @@ $ulimit -a 編輯 /etc/pam.d/common-session, 加上 1 &hellip;">
 <section>
   <h1>Latest Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   <script type="text/javascript">
     $.domReady(function(){
@@ -249,6 +198,7 @@ $ulimit -a 編輯 /etc/pam.d/common-session, 加上 1 &hellip;">
 
   
 </aside>
+
 
     </div>
   </div>

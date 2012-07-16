@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: apache | 鄭傑森的 "扣"]]></title>
+  <link href="http://jasoncheng.github.com/blog/categories/apache/atom.xml" rel="self"/>
+  <link href="http://jasoncheng.github.com/"/>
+  <updated>2012-07-16T22:21:28+08:00</updated>
+  <id>http://jasoncheng.github.com/</id>
+  <author>
+    <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
+    <email><![CDATA[info@jasoncheng.tw]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Too many open files]]></title>
+    <link href="http://jasoncheng.github.com/blog/2012/07/16/too-many-open-files/"/>
+    <updated>2012-07-16T22:03:00+08:00</updated>
+    <id>http://jasoncheng.github.com/blog/2012/07/16/too-many-open-files</id>
+    <content type="html"><![CDATA[<p>最近常遇到 Too many open files 的錯誤訊息, 不管是 memcached / nodejs ..
+這跟Server上面的ulimit有關. 必須調整1024(預設)值.</p>
+
+<p>顯示目前限制
+<code>sh
+$ulimit -a
+</code></p>
+
+<p>編輯 /etc/pam.d/common-session, 加上
+<code>sh
+session required pam_limits.so
+</code></p>
+
+<p>編輯 /etc/security/limits.conf
+<code>sh
+* soft nofile 51200
+* hard nofile 51200
+</code></p>
+
+<p>編輯 /etc/profile
+<code>sh
+ulimit -SHn 51200
+</code></p>
+
+<p>執行
+<code>sh
+ulimit -SHn 51200
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>
