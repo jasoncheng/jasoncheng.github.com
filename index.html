@@ -7,9 +7,7 @@
   <meta name="author" content="JasonCheng 17hado.com(@)gmail.com">
 
   
-  <meta name="description" content="在將近3年沒寫Android的狀況下, 最近卻因為工作的需求開始被要求重拾Android;
-都已經投向iOS陣營了..真是.
-不多說, 重新邊學邊寫也是件好事. 這篇文章就來當作第一炮吧..哈!!! 3年前, 不知道Google是否已經有GSON這樣的東西(應該已經有了, 只是小弟太愚昧..呵 &hellip;">
+  <meta name="description" content="最近剛在學習使用 Octopress + Github, 把弄過幾次的經驗記錄下來. 因為我會在兩台以上的電腦使用 octopress 寫文章, 但是看過一些文章後, 覺得要在第N台電腦搞 $git clone ..這些設定, 太麻煩了. 使用 Dropbox 存放 Octopress 的資料( &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +75,68 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/17/octopress-my-experience/">Octopress + Github 學習經驗</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-17T12:05:00+08:00" pubdate data-updated="true">Jul 17<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/17/octopress-my-experience/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近剛在學習使用 Octopress + Github, 把弄過幾次的經驗記錄下來.</p>
+
+<p>因為我會在兩台以上的電腦使用 octopress 寫文章, 但是看過一些文章後,</p>
+
+<p>覺得要在第N台電腦搞 <code>$git clone ..</code>這些設定, 太麻煩了.</p>
+
+<h3>使用 Dropbox 存放 Octopress 的資料(source..等)</h3>
+
+<p>當設定好 octopress <code>$rake install</code> 之後,
+就不要再操作 git 了; ex.<code>$git add . </code> or <code>$git add source</code>,</p>
+
+<p><strong><em> 不需要把 source 丟到 github 上面一樣可以運作 </em></strong></p>
+
+<p><img src="images/dropbox_octopress.png"></p>
+
+<p><img src="images/octopress_github_no_need_source.png"></p>
+
+<h3>Github上面只放_depoly的資料</h3>
+
+<figure class='code'><figcaption><span>每次要發佈只要</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$rake</span> generate
+</span><span class='line'><span class="nv">$rake</span> deploy
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -325,6 +385,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/07/17/octopress-my-experience/">octopress + github 學習經驗</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/07/17/gson/">GSON - Google的兒子</a>
       </li>
     
@@ -353,11 +417,11 @@
 
 <section>
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/apache'>apache (1)</a></li><li><a href='/blog/categories/gson'>GSON (1)</a></li><li><a href='/blog/categories/java'>Java (1)</a></li><li><a href='/blog/categories/json'>JSON (1)</a></li><li><a href='/blog/categories/linux'>linux (1)</a></li><li><a href='/blog/categories/nodejs'>nodejs (1)</a></li><li><a href='/blog/categories/parser'>parser (1)</a></li><li><a href='/blog/categories/ubuntu'>ubuntu (1)</a></li><li><a href='/blog/categories/ulimit'>ulimit (1)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/apache'>apache (1)</a></li><li><a href='/blog/categories/dropbox'>Dropbox (1)</a></li><li><a href='/blog/categories/github'>Github (1)</a></li><li><a href='/blog/categories/gson'>GSON (1)</a></li><li><a href='/blog/categories/java'>Java (1)</a></li><li><a href='/blog/categories/json'>JSON (1)</a></li><li><a href='/blog/categories/linux'>linux (1)</a></li><li><a href='/blog/categories/nodejs'>nodejs (1)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/parser'>parser (1)</a></li><li><a href='/blog/categories/ubuntu'>ubuntu (1)</a></li><li><a href='/blog/categories/ulimit'>ulimit (1)</a></li></ul>
 </section>
 <section>
   <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/android' style='font-size: 160.0%'>Android(1)</a> <a href='/blog/categories/apache' style='font-size: 160.0%'>apache(1)</a> <a href='/blog/categories/gson' style='font-size: 160.0%'>GSON(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>Java(1)</a> <a href='/blog/categories/json' style='font-size: 160.0%'>JSON(1)</a> <a href='/blog/categories/linux' style='font-size: 160.0%'>linux(1)</a> <a href='/blog/categories/nodejs' style='font-size: 160.0%'>nodejs(1)</a> <a href='/blog/categories/parser' style='font-size: 160.0%'>parser(1)</a> <a href='/blog/categories/ubuntu' style='font-size: 160.0%'>ubuntu(1)</a> <a href='/blog/categories/ulimit' style='font-size: 160.0%'>ulimit(1)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/android' style='font-size: 160.0%'>Android(1)</a> <a href='/blog/categories/apache' style='font-size: 160.0%'>apache(1)</a> <a href='/blog/categories/dropbox' style='font-size: 160.0%'>Dropbox(1)</a> <a href='/blog/categories/github' style='font-size: 160.0%'>Github(1)</a> <a href='/blog/categories/gson' style='font-size: 160.0%'>GSON(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>Java(1)</a> <a href='/blog/categories/json' style='font-size: 160.0%'>JSON(1)</a> <a href='/blog/categories/linux' style='font-size: 160.0%'>linux(1)</a> <a href='/blog/categories/nodejs' style='font-size: 160.0%'>nodejs(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>Octopress(1)</a> <a href='/blog/categories/parser' style='font-size: 160.0%'>parser(1)</a> <a href='/blog/categories/ubuntu' style='font-size: 160.0%'>ubuntu(1)</a> <a href='/blog/categories/ulimit' style='font-size: 160.0%'>ulimit(1)</a> </span>
 </section>
 <section>
   <h1>&nbsp;</h1>
