@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: HttpURLConnection | 鄭傑森的 "扣"]]></title>
-  <link href="http://jasoncheng.github.com/blog/categories/httpurlconnection/atom.xml" rel="self"/>
-  <link href="http://jasoncheng.github.com/"/>
-  <updated>2012-07-19T02:58:48+08:00</updated>
-  <id>http://jasoncheng.github.com/</id>
+  <link href="http://jasoncheng.tw/blog/categories/httpurlconnection/atom.xml" rel="self"/>
+  <link href="http://jasoncheng.tw/"/>
+  <updated>2012-07-19T03:44:23+08:00</updated>
+  <id>http://jasoncheng.tw/</id>
   <author>
     <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
     <email><![CDATA[info@jasoncheng.tw]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[善用 HttpResponseCache]]></title>
-    <link href="http://jasoncheng.github.com/blog/2012/07/17/httpresponsecache/"/>
+    <link href="http://jasoncheng.tw/blog/2012/07/17/httpresponsecache/"/>
     <updated>2012-07-17T21:16:00+08:00</updated>
-    <id>http://jasoncheng.github.com/blog/2012/07/17/httpresponsecache</id>
+    <id>http://jasoncheng.tw/blog/2012/07/17/httpresponsecache</id>
     <content type="html"><![CDATA[<p>之前寫 Android App 都要自己實作 Cache, 不管是圖片或者是API資料;</p>
 
 <p>比如說: 打開程式後, 如果Local有Cache就先讀取Cache; 然後在暗地裡發送Request去更新圖片/API資料等...

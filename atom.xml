@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[鄭傑森的 "扣"]]></title>
-  <link href="http://jasoncheng.github.com/atom.xml" rel="self"/>
-  <link href="http://jasoncheng.github.com/"/>
-  <updated>2012-07-19T02:58:48+08:00</updated>
-  <id>http://jasoncheng.github.com/</id>
+  <link href="http://jasoncheng.tw/atom.xml" rel="self"/>
+  <link href="http://jasoncheng.tw/"/>
+  <updated>2012-07-19T03:44:23+08:00</updated>
+  <id>http://jasoncheng.tw/</id>
   <author>
     <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
     <email><![CDATA[info@jasoncheng.tw]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[善用 HttpResponseCache]]></title>
-    <link href="http://jasoncheng.github.com/blog/2012/07/17/httpresponsecache/"/>
+    <link href="http://jasoncheng.tw/blog/2012/07/17/httpresponsecache/"/>
     <updated>2012-07-17T21:16:00+08:00</updated>
-    <id>http://jasoncheng.github.com/blog/2012/07/17/httpresponsecache</id>
+    <id>http://jasoncheng.tw/blog/2012/07/17/httpresponsecache</id>
     <content type="html"><![CDATA[<p>之前寫 Android App 都要自己實作 Cache, 不管是圖片或者是API資料;</p>
 
 <p>比如說: 打開程式後, 如果Local有Cache就先讀取Cache; 然後在暗地裡發送Request去更新圖片/API資料等&#8230;
@@ -36,7 +36,7 @@
 <p>接下來, 實作吧!! 其實很簡單, 你不必改寫你的任何Code,
 你只要 Application層, 把它啓用就好了; 剩下的一切 HttpURLConnection 會幫你處理</p>
 
-<figure class='code'><figcaption><span> (ResponseApplication.java)</span> <a href='http://jasoncheng.github.com/downloads/code/ResponseCache/ResponseApplication.java'>download</a></figcaption>
+<figure class='code'><figcaption><span> (ResponseApplication.java)</span> <a href='http://jasoncheng.tw/downloads/code/ResponseCache/ResponseApplication.java'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -100,7 +100,7 @@
 
 
 
-<figure class='code'><figcaption><span> (MainActivity.java)</span> <a href='http://jasoncheng.github.com/downloads/code/ResponseCache/MainActivity.java'>download</a></figcaption>
+<figure class='code'><figcaption><span> (MainActivity.java)</span> <a href='http://jasoncheng.tw/downloads/code/ResponseCache/MainActivity.java'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -396,9 +396,9 @@
   
   <entry>
     <title type="html"><![CDATA[octopress + github 學習經驗]]></title>
-    <link href="http://jasoncheng.github.com/blog/2012/07/17/octopress-my-experience/"/>
+    <link href="http://jasoncheng.tw/blog/2012/07/17/octopress-my-experience/"/>
     <updated>2012-07-17T12:05:00+08:00</updated>
-    <id>http://jasoncheng.github.com/blog/2012/07/17/octopress-my-experience</id>
+    <id>http://jasoncheng.tw/blog/2012/07/17/octopress-my-experience</id>
     <content type="html"><![CDATA[<p>最近剛在學習使用 Octopress + Github, 把弄過幾次的經驗記錄下來.</p>
 
 <p>因為我會在兩台以上的電腦使用 octopress 寫文章, 但是看過一些文章後,</p>
@@ -429,9 +429,9 @@
   
   <entry>
     <title type="html"><![CDATA[GSON - Google的兒子]]></title>
-    <link href="http://jasoncheng.github.com/blog/2012/07/17/gson/"/>
+    <link href="http://jasoncheng.tw/blog/2012/07/17/gson/"/>
     <updated>2012-07-17T00:31:00+08:00</updated>
-    <id>http://jasoncheng.github.com/blog/2012/07/17/gson</id>
+    <id>http://jasoncheng.tw/blog/2012/07/17/gson</id>
     <content type="html"><![CDATA[<p>在將近3年沒寫Android的狀況下, 最近卻因為工作的需求開始被要求重拾Android;
 都已經投向iOS陣營了..真是.
 不多說, 重新邊學邊寫也是件好事. 這篇文章就來當作第一炮吧..哈!!!</p>
@@ -553,9 +553,9 @@
   
   <entry>
     <title type="html"><![CDATA[Too many open files]]></title>
-    <link href="http://jasoncheng.github.com/blog/2012/07/16/too-many-open-files/"/>
+    <link href="http://jasoncheng.tw/blog/2012/07/16/too-many-open-files/"/>
     <updated>2012-07-16T22:03:00+08:00</updated>
-    <id>http://jasoncheng.github.com/blog/2012/07/16/too-many-open-files</id>
+    <id>http://jasoncheng.tw/blog/2012/07/16/too-many-open-files</id>
     <content type="html"><![CDATA[<p>最近常遇到 Too many open files 的錯誤訊息, 不管是 memcached / nodejs ..
 這跟Server上面的ulimit有關. 必須調整1024(預設)值.</p>
 
