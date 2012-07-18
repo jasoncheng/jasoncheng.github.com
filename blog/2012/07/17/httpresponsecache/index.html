@@ -1,27 +1,113 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: NodeJS | 鄭傑森的 "扣"]]></title>
-  <link href="http://jasoncheng.github.com/blog/categories/nodejs/atom.xml" rel="self"/>
-  <link href="http://jasoncheng.github.com/"/>
-  <updated>2012-07-18T21:20:53+08:00</updated>
-  <id>http://jasoncheng.github.com/</id>
-  <author>
-    <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
-    <email><![CDATA[info@jasoncheng.tw]]></email>
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>善用 HttpResponseCache - 鄭傑森的 "扣"</title>
+  <meta name="google-site-verification" content="PxaXwTiThegfVD4OQrn7nNOgfiBfwMMnSR1DEKk9VVo" />
+  <meta name="author" content="JasonCheng 17hado.com(@)gmail.com">
 
   
-  <entry>
-    <title type="html"><![CDATA[善用 HttpResponseCache]]></title>
-    <link href="http://jasoncheng.github.com/blog/2012/07/17/httpresponsecache/"/>
-    <updated>2012-07-17T21:16:00+08:00</updated>
-    <id>http://jasoncheng.github.com/blog/2012/07/17/httpresponsecache</id>
-    <content type="html"><![CDATA[<p>之前寫 Android App 都要自己實作 Cache, 不管是圖片或者是API資料;</p>
+  <meta name="description" content="之前寫 Android App 都要自己實作 Cache, 不管是圖片或者是API資料; 比如說: 打開程式後, 如果Local有Cache就先讀取Cache; 然後在暗地裡發送Request去更新圖片/API資料等&#8230;
+當有新的, 直接複寫本地端的緩存, 然後 notify &hellip;">
+  
 
-<p>比如說: 打開程式後, 如果Local有Cache就先讀取Cache; 然後在暗地裡發送Request去更新圖片/API資料等...
-當有新的, 直接複寫本地端的緩存, 然後 notify refresh.  而且還要防止Cache太多, 要定時刪除舊的資料....</p>
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jasoncheng.github.com/blog/2012/07/17/httpresponsecache/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="鄭傑森的 "扣"" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33366033-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">鄭傑森的 "扣"</a></h1>
+  
+    <h2>我愛鬼扯蛋....</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jasoncheng.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">善用 HttpResponseCache</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-17T21:16:00+08:00" pubdate data-updated="true">Jul 17<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>之前寫 Android App 都要自己實作 Cache, 不管是圖片或者是API資料;</p>
+
+<p>比如說: 打開程式後, 如果Local有Cache就先讀取Cache; 然後在暗地裡發送Request去更新圖片/API資料等&#8230;
+當有新的, 直接複寫本地端的緩存, 然後 notify refresh.  而且還要防止Cache太多, 要定時刪除舊的資料&#8230;.</p>
 
 <p><strong><em> 太累了 </em></strong></p>
 
@@ -36,7 +122,7 @@
 <p>接下來, 實作吧!! 其實很簡單, 你不必改寫你的任何Code,
 你只要 Application層, 把它啓用就好了; 剩下的一切 HttpURLConnection 會幫你處理</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (ResponseApplication.java)</span> <a href='/downloads/code/ResponseCache/ResponseApplication.java'>download</a></figcaption>
+<figure class='code'><figcaption><span> (ResponseApplication.java)</span> <a href='/downloads/code/ResponseCache/ResponseApplication.java'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -95,9 +181,12 @@
 </span><span class='line'>    <span class="o">}</span>
 </span><span class='line'>  <span class="o">}</span>
 </span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+</span></code></pre></td></tr></table></div></figure>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (MainActivity.java)</span> <a href='/downloads/code/ResponseCache/MainActivity.java'>download</a></figcaption>
+
+
+
+<figure class='code'><figcaption><span> (MainActivity.java)</span> <a href='/downloads/code/ResponseCache/MainActivity.java'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -274,64 +363,106 @@
 </span><span class='line'>
 </span><span class='line'>  <span class="o">}</span>
 </span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+</span></code></pre></td></tr></table></div></figure>
 
-<p><code>js 接下來用 NodeJS 寫個簡單的Static File Server
-var express = require("express");
-app = express.createServer();
-app.use(express.logger());
-app.use(express.static(__dirname + '/public'));
-app.listen(4000);
-</code></p>
 
-<p>``` sh 每個Request都會產生兩隻檔案, 一個是實體檔案, 一個是 HTTP Header 資料</p>
 
-<h1>cd /data/data/com.example.testresponsecache/cache/http</h1>
 
-<h1>ls -l</h1>
+<figure class='code'><figcaption><span>接下來用 NodeJS 寫個簡單的Static File Server</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;express&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">.</span><span class="nx">createServer</span><span class="p">();</span>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">logger</span><span class="p">());</span>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="kr">static</span><span class="p">(</span><span class="nx">__dirname</span> <span class="o">+</span> <span class="s1">&#39;/public&#39;</span><span class="p">));</span>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">4000</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p>-rw------- u0_a48   u0_a48        345 2012-07-17 23:07 20ebbdb944f2be7d9ea96466bafe98a5.0
--rw------- u0_a48   u0_a48         42 2012-07-17 23:07 20ebbdb944f2be7d9ea96466bafe98a5.1
--rw------- u0_a48   u0_a48        321 2012-07-17 23:07 7abaca174bffb497cea054db94961804.0
--rw------- u0_a48   u0_a48      11856 2012-07-17 23:07 7abaca174bffb497cea054db94961804.1
--rw------- u0_a48   u0_a48        163 2012-07-17 23:07 journal
-```</p>
 
-<p>``` sh 整個的運作的關鍵就在 Last-Modified</p>
 
-<h1>cat 20ebbdb944f2be7d9ea96466bafe98a5.0</h1>
 
-<p>http://jasoncheng.tw/1.json
-GET
-0
-HTTP/1.1 200 OK
-9
-Connection: keep-alive
-Content-Encoding: gzip
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 17 Jul 2012 15:01:31 GMT
-Last-Modified: Tue, 17 Jul 2012 13:24:14 GMT
-Server: nginx/0.7.65
-Transfer-Encoding: chunked
-X-Android-Received-Millis: 1342537658233
-X-Android-Sent-Millis: 1342537658210
-```</p>
+<figure class='code'><figcaption><span>每個Request都會產生兩隻檔案, 一個是實體檔案, 一個是 HTTP Header 資料</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># cd /data/data/com.example.testresponsecache/cache/http</span>
+</span><span class='line'><span class="c"># ls -l</span>
+</span><span class='line'>-rw------- u0_a48   u0_a48        345 2012-07-17 23:07 20ebbdb944f2be7d9ea96466bafe98a5.0
+</span><span class='line'>-rw------- u0_a48   u0_a48         42 2012-07-17 23:07 20ebbdb944f2be7d9ea96466bafe98a5.1
+</span><span class='line'>-rw------- u0_a48   u0_a48        321 2012-07-17 23:07 7abaca174bffb497cea054db94961804.0
+</span><span class='line'>-rw------- u0_a48   u0_a48      11856 2012-07-17 23:07 7abaca174bffb497cea054db94961804.1
+</span><span class='line'>-rw------- u0_a48   u0_a48        163 2012-07-17 23:07 journal
+</span></code></pre></td></tr></table></div></figure>
 
-<p><code>sh 第1次執行
-- [Tue, 17 Jul 2012 15:14:18 GMT] "GET /1.png HTTP/1.1" 200 11856 "-" "Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)"
-- [Tue, 17 Jul 2012 15:14:20 GMT] "GET /1.json HTTP/1.1" 200 22 "-" "Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)"
-</code></p>
 
-<p><code>sh 第2次執行, Server 好輕鬆, 只要回304就好了, 省下多少頻寬阿
-- [Tue, 17 Jul 2012 15:14:36 GMT] "GET /1.png HTTP/1.1" 304 - "-" "Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)"
-- [Tue, 17 Jul 2012 15:14:36 GMT] "GET /1.json HTTP/1.1" 304 - "-" "Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)"
-</code></p>
 
-<p><code>sh 修改1.json檔案後, Last-modified 改變了, 所以重新抓一次, 所以 Status Code 變回 200 Okay!
-root@ubuntu:/var/www/html/jasoncheng/static_test# node web.js | grep -v favicon
-- [Tue, 17 Jul 2012 15:17:30 GMT] "GET /1.png HTTP/1.1" 304 - "-" "Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)"
-- [Tue, 17 Jul 2012 15:17:30 GMT] "GET /1.json HTTP/1.1" 200 17 "-" "Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)"
-</code></p>
+
+<figure class='code'><figcaption><span>整個的運作的關鍵就在 Last-Modified</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># cat 20ebbdb944f2be7d9ea96466bafe98a5.0</span>
+</span><span class='line'>http://jasoncheng.tw/1.json
+</span><span class='line'>GET
+</span><span class='line'>0
+</span><span class='line'>HTTP/1.1 200 OK
+</span><span class='line'>9
+</span><span class='line'>Connection: keep-alive
+</span><span class='line'>Content-Encoding: gzip
+</span><span class='line'>Content-Type: text/plain; <span class="nv">charset</span><span class="o">=</span>utf-8
+</span><span class='line'>Date: Tue, 17 Jul 2012 15:01:31 GMT
+</span><span class='line'>Last-Modified: Tue, 17 Jul 2012 13:24:14 GMT
+</span><span class='line'>Server: nginx/0.7.65
+</span><span class='line'>Transfer-Encoding: chunked
+</span><span class='line'>X-Android-Received-Millis: 1342537658233
+</span><span class='line'>X-Android-Sent-Millis: 1342537658210
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>第1次執行</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>- <span class="o">[</span>Tue, 17 Jul 2012 15:14:18 GMT<span class="o">]</span> <span class="s2">&quot;GET /1.png HTTP/1.1&quot;</span> 200 11856 <span class="s2">&quot;-&quot;</span> <span class="s2">&quot;Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)&quot;</span>
+</span><span class='line'>- <span class="o">[</span>Tue, 17 Jul 2012 15:14:20 GMT<span class="o">]</span> <span class="s2">&quot;GET /1.json HTTP/1.1&quot;</span> 200 22 <span class="s2">&quot;-&quot;</span> <span class="s2">&quot;Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>第2次執行, Server 好輕鬆, 只要回304就好了, 省下多少頻寬阿</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>- <span class="o">[</span>Tue, 17 Jul 2012 15:14:36 GMT<span class="o">]</span> <span class="s2">&quot;GET /1.png HTTP/1.1&quot;</span> 304 - <span class="s2">&quot;-&quot;</span> <span class="s2">&quot;Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)&quot;</span>
+</span><span class='line'>- <span class="o">[</span>Tue, 17 Jul 2012 15:14:36 GMT<span class="o">]</span> <span class="s2">&quot;GET /1.json HTTP/1.1&quot;</span> 304 - <span class="s2">&quot;-&quot;</span> <span class="s2">&quot;Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>修改1.json檔案後, Last-modified 改變了, 所以重新抓一次, 所以 Status Code 變回 200 Okay!</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>root@ubuntu:/var/www/html/jasoncheng/static_test# node web.js | grep -v favicon
+</span><span class='line'>- <span class="o">[</span>Tue, 17 Jul 2012 15:17:30 GMT<span class="o">]</span> <span class="s2">&quot;GET /1.png HTTP/1.1&quot;</span> 304 - <span class="s2">&quot;-&quot;</span> <span class="s2">&quot;Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)&quot;</span>
+</span><span class='line'>- <span class="o">[</span>Tue, 17 Jul 2012 15:17:30 GMT<span class="o">]</span> <span class="s2">&quot;GET /1.json HTTP/1.1&quot;</span> 200 17 <span class="s2">&quot;-&quot;</span> <span class="s2">&quot;Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h3>測試結果</h3>
 
@@ -346,7 +477,200 @@ root@ubuntu:/var/www/html/jasoncheng/static_test# node web.js | grep -v favicon
 - Server 上的圖片修改後, Client端並不會即時更新; 懶得翻 Android Source Code了..有興趣的朋友, 再去追 (不過也沒差吧, 應該沒有人大頭照常換的吧)
 - 如果遇到特殊的 port number (非80 port), cache不會生效.
 </code></pre>
-]]></content>
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-</feed>
+
+<span class="byline author vcard">Posted by <span class="fn">JasonCheng 17hado.com(@)gmail.com</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-17T21:16:00+08:00" pubdate data-updated="true">Jul 17<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/android/'>Android</a>, <a class='category' href='/blog/categories/httpresponsecache/'>HttpResponseCache</a>, <a class='category' href='/blog/categories/httpurlconnection/'>HttpURLConnection</a>, <a class='category' href='/blog/categories/java/'>Java</a>, <a class='category' href='/blog/categories/nodejs/'>NodeJS</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jasoncheng.github.com/blog/2012/07/17/httpresponsecache/" data-via="jasoncheng" data-counturl="http://jasoncheng.github.com/blog/2012/07/17/httpresponsecache/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/07/17/octopress-my-experience/" title="Previous Post: octopress + github 學習經驗">&laquo; octopress + github 學習經驗</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/07/17/httpresponsecache/">善用 HttpResponseCache</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/07/17/octopress-my-experience/">octopress + github 學習經驗</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/07/17/gson/">GSON - Google的兒子</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/07/16/too-many-open-files/">Too many open files</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("jasoncheng", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/jasoncheng" class="twitter-follow-button" data-show-count="false">Follow @jasoncheng</a>
+  
+</section>
+
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/android'>Android (2)</a></li><li><a href='/blog/categories/apache'>apache (1)</a></li><li><a href='/blog/categories/dropbox'>Dropbox (1)</a></li><li><a href='/blog/categories/github'>Github (1)</a></li><li><a href='/blog/categories/gson'>GSON (1)</a></li><li><a href='/blog/categories/httpresponsecache'>HttpResponseCache (1)</a></li><li><a href='/blog/categories/httpurlconnection'>HttpURLConnection (1)</a></li><li><a href='/blog/categories/java'>Java (2)</a></li><li><a href='/blog/categories/json'>JSON (1)</a></li><li><a href='/blog/categories/linux'>linux (1)</a></li><li><a href='/blog/categories/nodejs'>NodeJS (1)</a></li><li><a href='/blog/categories/nodejs'>nodejs (1)</a></li><li><a href='/blog/categories/octopress'>Octopress (1)</a></li><li><a href='/blog/categories/parser'>parser (1)</a></li><li><a href='/blog/categories/ubuntu'>ubuntu (1)</a></li><li><a href='/blog/categories/ulimit'>ulimit (1)</a></li></ul>
+</section>
+<section>
+  <h1>Tag Cloud</h1>
+    <span id="tag-cloud"><a href='/blog/categories/android' style='font-size: 160.0%'>Android(2)</a> <a href='/blog/categories/apache' style='font-size: 130.0%'>apache(1)</a> <a href='/blog/categories/dropbox' style='font-size: 130.0%'>Dropbox(1)</a> <a href='/blog/categories/github' style='font-size: 130.0%'>Github(1)</a> <a href='/blog/categories/gson' style='font-size: 130.0%'>GSON(1)</a> <a href='/blog/categories/httpresponsecache' style='font-size: 130.0%'>HttpResponseCache(1)</a> <a href='/blog/categories/httpurlconnection' style='font-size: 130.0%'>HttpURLConnection(1)</a> <a href='/blog/categories/java' style='font-size: 160.0%'>Java(2)</a> <a href='/blog/categories/json' style='font-size: 130.0%'>JSON(1)</a> <a href='/blog/categories/linux' style='font-size: 130.0%'>linux(1)</a> <a href='/blog/categories/nodejs' style='font-size: 130.0%'>NodeJS(1)</a> <a href='/blog/categories/nodejs' style='font-size: 130.0%'>nodejs(1)</a> <a href='/blog/categories/octopress' style='font-size: 130.0%'>Octopress(1)</a> <a href='/blog/categories/parser' style='font-size: 130.0%'>parser(1)</a> <a href='/blog/categories/ubuntu' style='font-size: 130.0%'>ubuntu(1)</a> <a href='/blog/categories/ulimit' style='font-size: 130.0%'>ulimit(1)</a> </span>
+</section>
+<section>
+  <h1>&nbsp;</h1>
+  <script type="text/javascript"><!--
+  google_ad_client = "ca-pub-8452745785618738";
+  /* jasoncheng.github.com */
+  google_ad_slot = "8661443833";
+  google_ad_width = 250;
+  google_ad_height = 250;
+  //-->
+  </script>
+  <script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - JasonCheng 17hado.com(@)gmail.com -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jasoncheng';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://jasoncheng.github.com/blog/2012/07/17/httpresponsecache/';
+        var disqus_url = 'http://jasoncheng.github.com/blog/2012/07/17/httpresponsecache/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
