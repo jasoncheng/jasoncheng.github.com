@@ -2,14 +2,12 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Too many open files - 鄭傑森的 "扣"</title>
+  <title>Category: proxy - 鄭傑森的 "扣"</title>
   <meta name="google-site-verification" content="PxaXwTiThegfVD4OQrn7nNOgfiBfwMMnSR1DEKk9VVo" />
   <meta name="author" content="JasonCheng 17hado.com(@)gmail.com">
 
   
-  <meta name="description" content="最近常遇到 Too many open files 的錯誤訊息, 不管是 memcached / nodejs ..
-這跟Server上面的ulimit有關. 必須調整1024(預設)值. 顯示目前限制 1
-$ulimit -a 編輯 /etc/pam.d/common-session, 加上 1 &hellip;">
+  <meta name="description" content="Category: proxy">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +16,7 @@ $ulimit -a 編輯 /etc/pam.d/common-session, 加上 1 &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jasoncheng.tw/blog/2012/07/16/too-many-open-files/">
+  <link rel="canonical" href="http://jasoncheng.twblog/categories/proxy/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -76,135 +74,36 @@ $ulimit -a 編輯 /etc/pam.d/common-session, 加上 1 &hellip;">
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
+<article role="article">
   
   <header>
-    
-      <h1 class="entry-title">Too Many Open Files</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-16T22:03:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2012</time>
-        
-         | <a href="#disqus_thread">Comments</a>
-        
-      </p>
+    <h1 class="entry-title">Category: Proxy</h1>
     
   </header>
-
-
-<div class="entry-content"><p>最近常遇到 Too many open files 的錯誤訊息, 不管是 memcached / nodejs ..
-這跟Server上面的ulimit有關. 必須調整1024(預設)值.</p>
-
-<p>顯示目前限制</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ulimit</span> -a
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>編輯 /etc/pam.d/common-session, 加上</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>session required pam_limits.so
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>編輯 /etc/security/limits.conf</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>* soft nofile 51200
-</span><span class='line'>* hard nofile 51200
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>編輯 /etc/profile</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">ulimit</span> -SHn 51200
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>執行</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">ulimit</span> -SHn 51200
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">JasonCheng 17hado.com(@)gmail.com</span></span>
-
-      
-
-
-
-
-
+  <div id="blog-archives" class="category">
 
 
 
   
+  <h2>2012</h2>
+
+<article>
+  
+<h1><a href="/blog/2012/07/19/node-http-proxy/">NodeJS 好物 node-http-proxy</a></h1>
+<time datetime="2012-07-19T23:50:00+08:00" pubdate><span class='month'>Jul</span> <span class='day'>19</span> <span class='year'>2012</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/nodejs/'>NodeJS</a>, <a class='category' href='/blog/categories/http-proxy/'>http-proxy</a>, <a class='category' href='/blog/categories/proxy/'>proxy</a>, <a class='category' href='/blog/categories/server/'>server</a></span>
+</footer>
 
 
-<time datetime="2012-07-16T22:03:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2012</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/apache/'>apache</a>, <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/nodejs/'>nodejs</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>, <a class='category' href='/blog/categories/ulimit/'>ulimit</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jasoncheng.tw/blog/2012/07/16/too-many-open-files/" data-via="jasoncheng" data-counturl="http://jasoncheng.tw/blog/2012/07/16/too-many-open-files/" >Tweet</a>
-  
-  
-  <div class="g-plusone" data-size="medium"></div>
-  
-  
-    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
-  
-</div>
-
-    
-    <p class="meta">
-      
-      
-        <a class="basic-alignment right" href="/blog/2012/07/17/gson/" title="Next Post: GSON - Google的兒子">GSON - Google的兒子 &raquo;</a>
-      
-    </p>
-  </footer>
 </article>
 
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-  </section>
+
+  
+</article>
 
 </div>
 
@@ -294,10 +193,7 @@ $ulimit -a 編輯 /etc/pam.d/common-session, 加上 1 &hellip;">
       var disqus_shortname = 'jasoncheng';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://jasoncheng.tw/blog/2012/07/16/too-many-open-files/';
-        var disqus_url = 'http://jasoncheng.tw/blog/2012/07/16/too-many-open-files/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
