@@ -4,7 +4,7 @@
   <title><![CDATA[Category: npm | 鄭傑森的 "扣"]]></title>
   <link href="http://jasoncheng.tw/blog/categories/npm/atom.xml" rel="self"/>
   <link href="http://jasoncheng.tw/"/>
-  <updated>2012-07-24T23:33:36+08:00</updated>
+  <updated>2012-07-24T23:46:06+08:00</updated>
   <id>http://jasoncheng.tw/</id>
   <author>
     <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
@@ -50,6 +50,10 @@ $ npm publish (發佈 Node Module 到 NPM Registry)
 
 <pre><code>- 當監控的Device Down, 就會發出告警信件通知
 </code></pre>
+
+<p><code>sh 安裝
+$ npm install cacti-host-updown-monitor
+</code></p>
 
 <p>主程式沒有幾行扣, 呵呵...見笑了!</p>
 
