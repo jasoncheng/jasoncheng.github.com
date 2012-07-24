@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: npm | 鄭傑森的 "扣"]]></title>
+  <link href="http://jasoncheng.tw/blog/categories/npm/atom.xml" rel="self"/>
+  <link href="http://jasoncheng.tw/"/>
+  <updated>2012-07-24T23:33:36+08:00</updated>
+  <id>http://jasoncheng.tw/</id>
+  <author>
+    <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
+    <email><![CDATA[info@jasoncheng.tw]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[幫你的 Cacti 加個監控告警機制]]></title>
+    <link href="http://jasoncheng.tw/blog/2012/07/24/new-node-module-cacti-host-updown-monitor/"/>
+    <updated>2012-07-24T22:47:00+08:00</updated>
+    <id>http://jasoncheng.tw/blog/2012/07/24/new-node-module-cacti-host-updown-monitor</id>
+    <content type="html"><![CDATA[<p>玩了幾個月的 Node, 而且昨晚睡不著, 裝了 cacti 起來玩玩 (<strong><em> 是的, 我很宅 </em></strong>),
+今天撞到頭的想把自己寫的爛東西  <a href="http://search.npmjs.org/#/cacti-host-updown-monitor">cacti-host-updown-monitor</a>, 分享一下!</p>
+
+<p>畢竟用的 node_modules 好一陣子了, 從來也沒用Github 來 OpenSource (羞~~這樣也叫 OpenSource... <strong><em> 指 </em></strong>) .
+趁這個機會, 順便來玩玩 npm 發佈.</p>
+
+<p><code>sh
+$ npm adduser (建立你的帳號)
+$ npm publish (發佈 Node Module 到 NPM Registry)
+</code></p>
+
+<p>或許你會說, <a href="http://www.cacti.net/">cacti</a> 不是已經有很多 plugin 了; 比如說, <code>thold</code> 之類的 Thresholds / Alarms 機制了,
+是的, 沒錯; <strong><em> But i don't care </em></strong>, 這部分我不想裝 plugin, 我只想用自己寫的...哈!</p>
+
+<p>題外話: 現在回想起來, 比起 cacti 以前在 TTN 弄的那套 Device Monitor 還真好用(誤)....但這都是過去了...過去了...</p>
+
+<h3>適用對象</h3>
+
+<pre><code>- 白老鼠
+- 不怕死的勇者
+- 有使用 cacti 做 device monitor 的人.
+</code></pre>
+
+<h3>適用的cacti版本</h3>
+
+<pre><code>- ALL
+</code></pre>
+
+<h3>唯一的用途</h3>
+
+<pre><code>- 當監控的Device Down, 就會發出告警信件通知
+</code></pre>
+
+<p>主程式沒有幾行扣, 呵呵...見笑了!</p>
+
+<p><div><script src='https://gist.github.com/3170658.js?file='></script>
+<noscript><pre><code>global.conf = require(&quot;./config&quot;);
+var flow = require(&quot;flow&quot;)
+  , db   = require(&quot;./model/Model.js&quot;)
+  , mail = require(&quot;mailer&quot;)
+  , downServers = {};
+
+function checkUpDown(){
+  flow.exec(
+    function(){
+      db.Host.all().success(this).error(function(err){
+        console.log(err.message);
+        process.exit(1);
+      });
+    },
+
+    function(hosts){
+      for(var idx in hosts){
+        var host = hosts[idx];
+        var mailConf = conf.mail;
+        mailConf.body = host.getTextStatus();
+        mailConf.subject = host.description + &quot; status update&quot;;
+        
+        if(!host.isServerUp()){
+          // if still down and status not update, no need to alarm again
+          if(downServers[host.id] &amp;&amp; downServers[host.id] == host.status){
+            continue;
+          }
+          // add to container
+          downServers[host.id] = host.status;
+          // send email
+          mail.send(mailConf, this.MULTI());
+        } else if(downServers[host.id]) { // server first time up , need to notify
+          // remove from container
+          delete downServers[host.id];
+          // send email
+          mail.send(mailConf, this.MULTI());
+        }
+      }
+    },
+
+    function(results){
+      for(var idx in results){
+        if(results[idx][0]){
+          console.dir(results[idx][0]);
+        }
+      }
+    }
+  );
+}
+
+checkUpDown();
+setInterval(checkUpDown, conf.hostCheckerTimer);</code></pre></noscript></div>
+</p>
+]]></content>
+  </entry>
+  
+</feed>
