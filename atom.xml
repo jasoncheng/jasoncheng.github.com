@@ -4,7 +4,7 @@
   <title><![CDATA[鄭傑森的 "扣"]]></title>
   <link href="http://jasoncheng.github.com/atom.xml" rel="self"/>
   <link href="http://jasoncheng.github.com/"/>
-  <updated>2013-11-25T19:28:12+08:00</updated>
+  <updated>2013-11-25T19:30:15+08:00</updated>
   <id>http://jasoncheng.github.com/</id>
   <author>
     <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
@@ -126,7 +126,7 @@ but currently i use init script instead. here is my example(/etc/init/web.conf):
 
 <h3>prevent use JSON.parse / JSON.stringify</h3>
 
-<p>In my experience, after your node run about few days(arround handle 20M requests),
+<p>In my experience, after your node run about few days(approximate handle 20M requests),
 if you use those two method on frequently request,
 100% i can sure that your node process will reach 100% CPU usage and finally can&#8217;t handle any request/response.</p>
 
