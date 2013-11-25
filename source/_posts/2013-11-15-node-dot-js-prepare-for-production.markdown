@@ -21,7 +21,7 @@ Recently, we finish a small project(news web site) base on NodeJS / MongoDB(Repl
 **jobs: **
     - huge amount news pages(directly query mongodb, and do layout)
     - each page at least require 50 ~ 200 mongodb query(It's a long story, that i don't wanna mention about)
-    - each page response time arround 50~100ms
+    - each page response time approximate 50~100ms
     - JSONP APIs
     - proxy 80 port request to another port number(maybe mobile web/different domain) which listened by NodeJS too
     - 302+301 redirect
@@ -97,7 +97,7 @@ b = '\\\\\\\\\\\\\\\\\...........';  // endless slash
 weird, right? i can't explain why? but after use heapdump i found this and fixed.
 
 my another EC2 server(m1.medium x 2) each handle 2.5M request per day, simple respose HTTP Header,
-, caculator pageview and update mongodb fields (count++); 
+calculator pageview and update mongodb fields (count++); 
 all server after run 4 days, it's will no response, and no any error, can't handle any request. all i can do is just restart 
 this service.
 
