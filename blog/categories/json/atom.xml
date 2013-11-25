@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: JSON | 鄭傑森的 "扣"]]></title>
-  <link href="http://jasoncheng.tw/blog/categories/json/atom.xml" rel="self"/>
-  <link href="http://jasoncheng.tw/"/>
-  <updated>2013-11-25T19:20:28+08:00</updated>
-  <id>http://jasoncheng.tw/</id>
+  <link href="http://jasoncheng.github.com/blog/categories/json/atom.xml" rel="self"/>
+  <link href="http://jasoncheng.github.com/"/>
+  <updated>2013-11-25T19:28:12+08:00</updated>
+  <id>http://jasoncheng.github.com/</id>
   <author>
     <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
     <email><![CDATA[info@jasoncheng.tw]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[GSON - Google的兒子]]></title>
-    <link href="http://jasoncheng.tw/blog/2012/07/17/gson/"/>
+    <link href="http://jasoncheng.github.com/blog/2012/07/17/gson/"/>
     <updated>2012-07-17T00:31:00+08:00</updated>
-    <id>http://jasoncheng.tw/blog/2012/07/17/gson</id>
+    <id>http://jasoncheng.github.com/blog/2012/07/17/gson</id>
     <content type="html"><![CDATA[<p>在將近3年沒寫Android的狀況下, 最近卻因為工作的需求開始被要求重拾Android;
 都已經投向iOS陣營了..真是.
 不多說, 重新邊學邊寫也是件好事. 這篇文章就來當作第一炮吧..哈!!!</p>

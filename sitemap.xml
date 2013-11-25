@@ -1,43 +1,47 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://jasoncheng.tw/blog/2012/07/16/too-many-open-files/</loc>
+        <loc>http://jasoncheng.github.com/blog/2012/07/16/too-many-open-files/</loc>
         <lastmod>2013-11-25T19:01:51+08:00</lastmod>
     </url>
     <url>
-        <loc>http://jasoncheng.tw/blog/2012/07/17/gson/</loc>
+        <loc>http://jasoncheng.github.com/blog/2012/07/17/gson/</loc>
         <lastmod>2013-11-25T19:01:51+08:00</lastmod>
     </url>
     <url>
-        <loc>http://jasoncheng.tw/blog/2012/07/17/octopress-my-experience/</loc>
+        <loc>http://jasoncheng.github.com/blog/2012/07/17/octopress-my-experience/</loc>
         <lastmod>2013-11-25T19:01:51+08:00</lastmod>
     </url>
     <url>
-        <loc>http://jasoncheng.tw/blog/2012/07/17/httpresponsecache/</loc>
+        <loc>http://jasoncheng.github.com/blog/2012/07/17/httpresponsecache/</loc>
         <lastmod>2013-11-25T19:01:51+08:00</lastmod>
     </url>
     <url>
-        <loc>http://jasoncheng.tw/blog/2012/07/19/node-http-proxy/</loc>
+        <loc>http://jasoncheng.github.com/blog/2012/07/19/node-http-proxy/</loc>
         <lastmod>2013-11-25T19:01:51+08:00</lastmod>
     </url>
     <url>
-        <loc>http://jasoncheng.tw/blog/2012/07/24/new-node-module-cacti-host-updown-monitor/</loc>
+        <loc>
+            http://jasoncheng.github.com/blog/2012/07/24/new-node-module-cacti-host-updown-monitor/
+        </loc>
         <lastmod>2013-11-25T19:01:51+08:00</lastmod>
     </url>
     <url>
-        <loc>http://jasoncheng.tw/blog/2013/11/15/node-dot-js-prepare-for-production/</loc>
+        <loc>
+            http://jasoncheng.github.com/blog/2013/11/15/node-dot-js-prepare-for-production/
+        </loc>
         <lastmod>2013-11-25T19:20:19+08:00</lastmod>
     </url>
     <url>
-        <loc>http://jasoncheng.tw/about/</loc>
+        <loc>http://jasoncheng.github.com/about/</loc>
         <lastmod>2013-11-25T19:01:51+08:00</lastmod>
     </url>
     <url>
-        <loc>http://jasoncheng.tw/blog/archives/</loc>
+        <loc>http://jasoncheng.github.com/blog/archives/</loc>
         <lastmod>2013-11-25T19:20:19+08:00</lastmod>
     </url>
     <url>
-        <loc>http://jasoncheng.tw/</loc>
+        <loc>http://jasoncheng.github.com/</loc>
         <lastmod>2013-11-25T19:20:19+08:00</lastmod>
     </url>
 </urlset>

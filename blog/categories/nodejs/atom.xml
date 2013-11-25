@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: NodeJS | 鄭傑森的 "扣"]]></title>
-  <link href="http://jasoncheng.tw/blog/categories/nodejs/atom.xml" rel="self"/>
-  <link href="http://jasoncheng.tw/"/>
-  <updated>2013-11-25T19:20:28+08:00</updated>
-  <id>http://jasoncheng.tw/</id>
+  <link href="http://jasoncheng.github.com/blog/categories/nodejs/atom.xml" rel="self"/>
+  <link href="http://jasoncheng.github.com/"/>
+  <updated>2013-11-25T19:28:12+08:00</updated>
+  <id>http://jasoncheng.github.com/</id>
   <author>
     <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
     <email><![CDATA[info@jasoncheng.tw]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Node.js ready for production, some tips.]]></title>
-    <link href="http://jasoncheng.tw/blog/2013/11/15/node-dot-js-prepare-for-production/"/>
+    <link href="http://jasoncheng.github.com/blog/2013/11/15/node-dot-js-prepare-for-production/"/>
     <updated>2013-11-15T21:25:00+08:00</updated>
-    <id>http://jasoncheng.tw/blog/2013/11/15/node-dot-js-prepare-for-production</id>
+    <id>http://jasoncheng.github.com/blog/2013/11/15/node-dot-js-prepare-for-production</id>
     <content type="html"><![CDATA[<p>This article is just for personal note/log, and don't know if this helpful.
 Recently, we finish a small project(news web site) base on NodeJS / MongoDB(Replicaset) / MySQL.</p>
 
@@ -241,9 +241,9 @@ maybe you should override console object for this.</p>
   
   <entry>
     <title type="html"><![CDATA[幫你的 Cacti 加個監控告警機制]]></title>
-    <link href="http://jasoncheng.tw/blog/2012/07/24/new-node-module-cacti-host-updown-monitor/"/>
+    <link href="http://jasoncheng.github.com/blog/2012/07/24/new-node-module-cacti-host-updown-monitor/"/>
     <updated>2012-07-24T22:47:00+08:00</updated>
-    <id>http://jasoncheng.tw/blog/2012/07/24/new-node-module-cacti-host-updown-monitor</id>
+    <id>http://jasoncheng.github.com/blog/2012/07/24/new-node-module-cacti-host-updown-monitor</id>
     <content type="html"><![CDATA[<p>玩了幾個月的 Node, 而且昨晚睡不著, 裝了 cacti 起來玩玩 (<strong><em> 是的, 我很宅 </em></strong>),
 今天撞到頭的想把自己寫的爛東西  <a href="http://search.npmjs.org/#/cacti-host-updown-monitor">cacti-host-updown-monitor</a>, 分享一下!</p>
 
@@ -291,9 +291,9 @@ $ npm install cacti-host-updown-monitor
   
   <entry>
     <title type="html"><![CDATA[NodeJS 好物 node-http-proxy]]></title>
-    <link href="http://jasoncheng.tw/blog/2012/07/19/node-http-proxy/"/>
+    <link href="http://jasoncheng.github.com/blog/2012/07/19/node-http-proxy/"/>
     <updated>2012-07-19T23:50:00+08:00</updated>
-    <id>http://jasoncheng.tw/blog/2012/07/19/node-http-proxy</id>
+    <id>http://jasoncheng.github.com/blog/2012/07/19/node-http-proxy</id>
     <content type="html"><![CDATA[<p>今天要介紹一個超棒的 node_module, 小弟用了一陣子了, 覺得好用, 推薦給大家;
 如果你的角色是 Server Administrator 的話,
 請繼續往下看, 希望這篇簡短地介紹, 會增加你工作上的效率 (我到底在扯什麼...).</p>
@@ -363,9 +363,9 @@ $npm install http-proxy
   
   <entry>
     <title type="html"><![CDATA[善用 HttpResponseCache]]></title>
-    <link href="http://jasoncheng.tw/blog/2012/07/17/httpresponsecache/"/>
+    <link href="http://jasoncheng.github.com/blog/2012/07/17/httpresponsecache/"/>
     <updated>2012-07-17T21:16:00+08:00</updated>
-    <id>http://jasoncheng.tw/blog/2012/07/17/httpresponsecache</id>
+    <id>http://jasoncheng.github.com/blog/2012/07/17/httpresponsecache</id>
     <content type="html"><![CDATA[<p>之前寫 Android App 都要自己實作 Cache, 不管是圖片或者是API資料;</p>
 
 <p>比如說: 打開程式後, 如果Local有Cache就先讀取Cache; 然後在暗地裡發送Request去更新圖片/API資料等...

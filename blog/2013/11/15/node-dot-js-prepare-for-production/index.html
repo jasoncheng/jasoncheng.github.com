@@ -19,12 +19,22 @@ Recently, we finish a small project(news web site) base on NodeJS &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jasoncheng.tw/blog/2013/11/15/node-dot-js-prepare-for-production/">
+  <link rel="canonical" href="http://jasoncheng.github.com/blog/2013/11/15/node-dot-js-prepare-for-production/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <script>
+  function addBlankTargetForLinks () {
+    $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+    });
+  }
+  $(document).bind('DOMNodeInserted', function(event) {
+    addBlankTargetForLinks();
+  });
+  </script>
   <link href="/atom.xml" rel="alternate" title="鄭傑森的 "扣"" type="application/atom+xml">
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -62,7 +72,7 @@ Recently, we finish a small project(news web site) base on NodeJS &hellip;">
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:jasoncheng.tw" />
+    <input type="hidden" name="q" value="site:jasoncheng.github.com" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -413,7 +423,7 @@ maybe you should override console object for this.</p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jasoncheng.tw/blog/2013/11/15/node-dot-js-prepare-for-production/" data-via="jasoncheng" data-counturl="http://jasoncheng.tw/blog/2013/11/15/node-dot-js-prepare-for-production/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jasoncheng.github.com/blog/2013/11/15/node-dot-js-prepare-for-production/" data-via="jasoncheng" data-counturl="http://jasoncheng.github.com/blog/2013/11/15/node-dot-js-prepare-for-production/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -528,8 +538,8 @@ maybe you should override console object for this.</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://jasoncheng.tw/blog/2013/11/15/node-dot-js-prepare-for-production/';
-        var disqus_url = 'http://jasoncheng.tw/blog/2013/11/15/node-dot-js-prepare-for-production/';
+        var disqus_identifier = 'http://jasoncheng.github.com/blog/2013/11/15/node-dot-js-prepare-for-production/';
+        var disqus_url = 'http://jasoncheng.github.com/blog/2013/11/15/node-dot-js-prepare-for-production/';
         var disqus_script = 'embed.js';
       
     (function () {

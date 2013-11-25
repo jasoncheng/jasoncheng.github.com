@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: mongodb | 鄭傑森的 "扣"]]></title>
-  <link href="http://jasoncheng.tw/blog/categories/mongodb/atom.xml" rel="self"/>
-  <link href="http://jasoncheng.tw/"/>
-  <updated>2013-11-25T19:20:28+08:00</updated>
-  <id>http://jasoncheng.tw/</id>
+  <link href="http://jasoncheng.github.com/blog/categories/mongodb/atom.xml" rel="self"/>
+  <link href="http://jasoncheng.github.com/"/>
+  <updated>2013-11-25T19:28:12+08:00</updated>
+  <id>http://jasoncheng.github.com/</id>
   <author>
     <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
     <email><![CDATA[info@jasoncheng.tw]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Node.js ready for production, some tips.]]></title>
-    <link href="http://jasoncheng.tw/blog/2013/11/15/node-dot-js-prepare-for-production/"/>
+    <link href="http://jasoncheng.github.com/blog/2013/11/15/node-dot-js-prepare-for-production/"/>
     <updated>2013-11-15T21:25:00+08:00</updated>
-    <id>http://jasoncheng.tw/blog/2013/11/15/node-dot-js-prepare-for-production</id>
+    <id>http://jasoncheng.github.com/blog/2013/11/15/node-dot-js-prepare-for-production</id>
     <content type="html"><![CDATA[<p>This article is just for personal note/log, and don't know if this helpful.
 Recently, we finish a small project(news web site) base on NodeJS / MongoDB(Replicaset) / MySQL.</p>
 

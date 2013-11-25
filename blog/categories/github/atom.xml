@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Github | 鄭傑森的 "扣"]]></title>
-  <link href="http://jasoncheng.tw/blog/categories/github/atom.xml" rel="self"/>
-  <link href="http://jasoncheng.tw/"/>
-  <updated>2013-11-25T19:20:28+08:00</updated>
-  <id>http://jasoncheng.tw/</id>
+  <link href="http://jasoncheng.github.com/blog/categories/github/atom.xml" rel="self"/>
+  <link href="http://jasoncheng.github.com/"/>
+  <updated>2013-11-25T19:28:12+08:00</updated>
+  <id>http://jasoncheng.github.com/</id>
   <author>
     <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
     <email><![CDATA[info@jasoncheng.tw]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[octopress + github 學習經驗]]></title>
-    <link href="http://jasoncheng.tw/blog/2012/07/17/octopress-my-experience/"/>
+    <link href="http://jasoncheng.github.com/blog/2012/07/17/octopress-my-experience/"/>
     <updated>2012-07-17T12:05:00+08:00</updated>
-    <id>http://jasoncheng.tw/blog/2012/07/17/octopress-my-experience</id>
+    <id>http://jasoncheng.github.com/blog/2012/07/17/octopress-my-experience</id>
     <content type="html"><![CDATA[<p>最近剛在學習使用 Octopress + Github, 把弄過幾次的經驗記錄下來.</p>
 
 <p>因為我會在兩台以上的電腦使用 octopress 寫文章, 但是看過一些文章後,</p>
