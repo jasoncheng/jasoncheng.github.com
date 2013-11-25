@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>鄭傑森的 "扣"</title>
+  <title>善用 HttpResponseCache - 鄭傑森的 "扣"</title>
   <meta name="author" content="JasonCheng 17hado.com(@)gmail.com">
 
   
-  <meta name="description" content="This article is just for personal note/log, and don&#8217;t know if this helpful.
-Recently, we finish a small project(news web site) base on NodeJS &hellip;">
+  <meta name="description" content="之前寫 Android App 都要自己實作 Cache, 不管是圖片或者是API資料; 比如說: 打開程式後, 如果Local有Cache就先讀取Cache; 然後在暗地裡發送Request去更新圖片/API資料等&#8230;
+當有新的, 直接複寫本地端的緩存, 然後 notify &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@ Recently, we finish a small project(news web site) base on NodeJS &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jasoncheng.tw/">
+  <link rel="canonical" href="http://jasoncheng.tw/blog/2012/07/17/httpresponsecache/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -75,528 +75,12 @@ Recently, we finish a small project(news web site) base on NodeJS &hellip;">
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/11/15/node-dot-js-prepare-for-production/">Node.js Ready for Production, Some Tips.</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-15T21:25:00+08:00" pubdate data-updated="true">Nov 15<span>th</span>, 2013</time>
-        
-         | <a href="/blog/2013/11/15/node-dot-js-prepare-for-production/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>This article is just for personal note/log, and don&#8217;t know if this helpful.
-Recently, we finish a small project(news web site) base on NodeJS / MongoDB(Replicaset) / MySQL.</p>
-
-<h3>status</h3>
-
-<p><strong>servers:</strong>  use <a href="http://aws.amazon.com/ec2/pricing/">Amazon EC2 m1.medium</a> * 2 (for we don&#8217;t use cluster, just 1 core CPU is enough; but why not use small instance, it&#8217;s network issue); Theoretically, one server can handle all of this, but for more safety reason(LoadBalance), we take two.</p>
-
-<p><strong>pageview:</strong> about 5 million pageview per day (i believe it&#8217;s can handle more request)</p>
-
-<p><strong>max concurrency user:</strong> 15,000</p>
-
-<p><strong>nodejs version:</strong> 0.10.21</p>
-
-<p><strong>jobs: </strong></p>
-
-<pre><code>- huge amount news pages(directly query mongodb, and do layout)
-- each page at least require 50 ~ 200 mongodb query(It's a long story, that i don't wanna mention about)
-- each page response time approximate 50~100ms
-- JSONP APIs
-- proxy 80 port request to another port number(maybe mobile web/different domain) which listened by NodeJS too
-- 302+301 redirect
-</code></pre>
-
-<h3>package.json</h3>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>"dependencies": {    
-</span><span class='line'>  "express": "3.4.4",
-</span><span class='line'>  "http-proxy": "0.10.2", 
-</span><span class='line'>  "mongodb": "1.3.19",    
-</span><span class='line'>  "sequelize": "1.6.0",   
-</span><span class='line'>  "dateformat": "~1.0.4", 
-</span><span class='line'>  "flow": "0.2.3",   
-</span><span class='line'>  "memcached": "0.1.5",   
-</span><span class='line'>  "node-cache": "0.0.4",
-</span><span class='line'>  "consolidate": "0.8.0", 
-</span><span class='line'>  "swig": "~0.13.5", 
-</span><span class='line'>  "sprintf": "0.1.1",
-</span><span class='line'>  "request": "2.27.0",    
-</span><span class='line'>  "solr": "0.2.2",   
-</span><span class='line'>  "MD5": "1.0.3",    
-</span><span class='line'>  "xml2js": "0.2.7", 
-</span><span class='line'>  "log-prefix": "0.0.0",  
-</span><span class='line'>  "sitemap": "0.6.0",
-</span><span class='line'>  "mysql": "2.0.0-alpha9",
-</span><span class='line'>  "colors": "~0.6.2"
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>cache as possible as you can</h3>
-
-<p>cache everything, and let it auto expire maybe few mins; for, NodeJS is a daemon,
-sometime in-memory cache is better/faster than memcached server,
-and most important things is it no necessary to convert <strong>Object/Array &lt;=> string</strong> each time you get and set.</p>
-
-<p>so, i cache Object/Array use <a href="https://github.com/ptarjan/node-cache">node-cache</a>, but be aware on call by reference.</p>
-
-<h3>keep process run forever</h3>
-
-<p>Before, i use <a href="https://github.com/nodejitsu/forever">forever</a> to keep process running, it&#8217;s very useful module;
-but currently i use init script instead. here is my example(/etc/init/web.conf):</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>start on (local-filesystems and net-device-up IFACE=eth0)       
-</span><span class='line'>stop on shutdown         
-</span><span class='line'>
-</span><span class='line'>respawn
-</span><span class='line'>
-</span><span class='line'>script      
-</span><span class='line'>  sleep 5          
-</span><span class='line'>  export NODE_ENV=production    
-</span><span class='line'>  cd /var/www/web
-</span><span class='line'>  exec /usr/bin/node --nouse-idle-notification www.js 2&gt;&1 &gt;&gt; /var/log/node/www.log 
-</span><span class='line'>end script  </span></code></pre></td></tr></table></div></figure>
-
-
-<h3>prevent use JSON.parse / JSON.stringify</h3>
-
-<p>In my experience, after your node run about few days(arround handle 20M requests),
-if you use those two method on frequently request,
-100% i can sure that your node process will reach 100% CPU usage and finally can&#8217;t handle any request/response.</p>
-
-<p>It&#8217;s can be trace through <a href="https://github.com/bnoordhuis/node-heapdump">heapdump</a>.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>var b = JSON.stringify({c:1293, t:'ads'});</span></code></pre></td></tr></table></div></figure>
-
-
-<p>maybe few days, will become&#8230;.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>b = '\\\\\\\\\\\\\\\\\...........';  // endless slash</span></code></pre></td></tr></table></div></figure>
-
-
-<p>weird, right? i can&#8217;t explain why? but after use heapdump i found this and fixed.</p>
-
-<p>my another EC2 server(m1.medium x 2) each handle 2.5M request per day, simple respose HTTP Header,
-calculator pageview and update mongodb fields (count++);
-all server after run 4 days, it&#8217;s will no response, and no any error, can&#8217;t handle any request. all i can do is just restart
-this service.</p>
-
-<p>after remove all JSON.parse/JSON.stringify, its alive form 4 days to 1 month before last time i restart.</p>
-
-<h3>too many open files</h3>
-
-<p><a href="http://stackoverflow.com/questions/5321432/simple-nodejs-http-proxy-fails-with-too-many-open-files">configure like this</a></p>
-
-<h3>log as more details as you can</h3>
-
-<p>my expressjs setting.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>app.configure('development', function(){   
-</span><span class='line'>  app.use(express.logger('dev'));
-</span><span class='line'>});
-</span><span class='line'>
-</span><span class='line'>app.configure('production', function(){    
-</span><span class='line'>  app.use(express.logger('default')); 
-</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
-
-
-<p>and my logrotate config is.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/var/log/node/*.log{  
-</span><span class='line'>  rotate 30 
-</span><span class='line'>  daily
-</span><span class='line'>  missingok 
-</span><span class='line'>  notifempty
-</span><span class='line'>  delaycompress  
-</span><span class='line'>  compress  
-</span><span class='line'>  copytruncate   
-</span><span class='line'>} </span></code></pre></td></tr></table></div></figure>
-
-
-<h3>process.on(&#8216;uncaughtException&#8217;)</h3>
-
-<p><a href="http://nodejs.org/api/process.html#process_event_uncaughtexception">according to this</a>, don&#8217;t use it.</p>
-
-<h3>think before use express.static</h3>
-
-<p>our new web site when lunch, first issue popup is static file server (NodeJS+express.static) not powerful,
-can&#8217;t handle large request on photos/css/images/javascript,
-even all static file send {maxAge:86000}, it&#8217;s just slowly and finally no any response.</p>
-
-<p>maybe nginx or apache is a good option for static file server.</p>
-
-<h3>Be careful on call by reference</h3>
-
-<p>Object or Array are call by reference, be careful.</p>
-
-<h3>mongoDB no open connection issue</h3>
-
-<p>We have 3 mongodb build with replicaset.
-This problem make me confuse for a long time, sometimes the mongodb connection reset, sometimes it&#8217;s show no open connection;
-and we tracing the wrong way either.</p>
-
-<p>But all my no open connection issue come from below (i&#8217;m 99% sure, not node mongo native module issue).
-In my case, those two</p>
-
-<pre><code>- prevent recursive call
-- prevent use process.uncaugthException
-</code></pre>
-
-<p>Below example, will produce &#8220;no open connection&#8221;, after few seconds:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>process.on('uncaughtException', function(err) {
-</span><span class='line'>  console.log('Caught exception: ' + err);  // watch this full code trace, you will figure out why connection drop!
-</span><span class='line'>});
-</span><span class='line'>
-</span><span class='line'>flow.exec(
-</span><span class='line'>  function(){
-</span><span class='line'>    db.find({lastName: 'jason'}).toArray(this);
-</span><span class='line'>  },
-</span><span class='line'>  function(err, docs){
-</span><span class='line'>    var data = [];
-</span><span class='line'>    for(var idx in docs){
-</span><span class='line'>      docs[idx].ooo = docs[idx].notExists.ooo; // will die here, then caugth by uncaughtException
-</span><span class='line'>      data.push(docs[idx]);
-</span><span class='line'>    }
-</span><span class='line'>    this(data);
-</span><span class='line'>  },
-</span><span class='line'>  function(data){
-</span><span class='line'>    res.render('index.html', data);
-</span><span class='line'>  }
-</span><span class='line'>);</span></code></pre></td></tr></table></div></figure>
-
-
-<p>What if, you still have to use process.on(&#8216;uncaughtException&#8217;) for some reason ?</p>
-
-<p>try process.nextTick, to escape this exception affect to mongo module, it&#8217;s useful!</p>
-
-<h3>wrote test case</h3>
-
-<p>thinking about all situation, and wrote into test case(maybe use <a href="http://visionmedia.github.io/mocha/">mocha</a>),
-for production service when occur unknow bug, this is quick solution to find the issue.</p>
-
-<pre><code>- such as, testing all recently URL through sitemap.xml ? if HTTP Status 200 Okay
-- such as, detect mognodb status, can be find data, can be use aggregate.....
-- such as, is MySQL/Memcached/Solr server alive?
-</code></pre>
-
-<h3>NodeJS console</h3>
-
-<p>use different log level (info/warn/error/log) and maybe add some <a href="https://github.com/Marak/colors.js">color</a>(red/yellow) for more easier to debug.</p>
-
-<p>console.warn and console.error is stderr, it won&#8217;t wrote message when NODE_ENV=production,
-maybe you should override console object for this.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/24/new-node-module-cacti-host-updown-monitor/">幫你的 Cacti 加個監控告警機制</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-24T22:47:00+08:00" pubdate data-updated="true">Jul 24<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/07/24/new-node-module-cacti-host-updown-monitor/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>玩了幾個月的 Node, 而且昨晚睡不著, 裝了 cacti 起來玩玩 (<strong><em> 是的, 我很宅 </em></strong>),
-今天撞到頭的想把自己寫的爛東西  <a href="http://search.npmjs.org/#/cacti-host-updown-monitor">cacti-host-updown-monitor</a>, 分享一下!</p>
-
-<p>畢竟用的 node_modules 好一陣子了, 從來也沒用Github 來 OpenSource (羞~~這樣也叫 OpenSource&#8230; <strong><em> 指 </em></strong>) .
-趁這個機會, 順便來玩玩 npm 發佈.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm adduser <span class="o">(</span>建立你的帳號<span class="o">)</span>
-</span><span class='line'><span class="nv">$ </span>npm publish <span class="o">(</span>發佈 Node Module 到 NPM Registry<span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>或許你會說, <a href="http://www.cacti.net/">cacti</a> 不是已經有很多 plugin 了; 比如說, <code>thold</code> 之類的 Thresholds / Alarms 機制了,
-是的, 沒錯; <strong><em> But i don&#8217;t care </em></strong>, 這部分我不想裝 plugin, 我只想用自己寫的&#8230;哈!</p>
-
-<p>題外話: 現在回想起來, 比起 cacti 以前在 TTN 弄的那套 Device Monitor 還真好用(誤)&#8230;.但這都是過去了&#8230;過去了&#8230;</p>
-
-<h3>適用對象</h3>
-
-<pre><code>- 白老鼠
-- 不怕死的勇者
-- 有使用 cacti 做 device monitor 的人.
-</code></pre>
-
-<h3>適用的cacti版本</h3>
-
-<pre><code>- ALL
-</code></pre>
-
-<h3>唯一的用途</h3>
-
-<pre><code>- 當監控的Device Down, 就會發出告警信件通知
-</code></pre>
-
-<figure class='code'><figcaption><span>安裝 </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm install cacti-host-updown-monitor
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>主程式沒有幾行扣, 呵呵&#8230;見笑了!</p>
-
-<div><script src='https://gist.github.com/3170658.js?file='></script>
-<noscript><pre><code>&lt;html&gt;&lt;body&gt;You are being &lt;a href=&quot;https://github.com/gist/3170658&quot;&gt;redirected&lt;/a&gt;.&lt;/body&gt;&lt;/html&gt;</code></pre></noscript></div>
-
-
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/19/node-http-proxy/">NodeJS 好物 Node-http-proxy</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-19T23:50:00+08:00" pubdate data-updated="true">Jul 19<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/07/19/node-http-proxy/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>今天要介紹一個超棒的 node_module, 小弟用了一陣子了, 覺得好用, 推薦給大家;
-如果你的角色是 Server Administrator 的話,
-請繼續往下看, 希望這篇簡短地介紹, 會增加你工作上的效率 (我到底在扯什麼&#8230;).</p>
-
-<h3>重點是, 把 port 80, 交給 NodeJS 吧</h3>
-
-<p>公司 R&amp;D 狀況:</p>
-
-<pre><code>- Team A 寫 Java servlet, 提供一些啥鬼的WebService
-- Team B 負責用 apache + PHP 寫 EndUser 網頁
-- Team C 負責用 NodeJS 寫開放的API
-- Team D 要用 nginx + php5-fpm 來寫後台控管網頁
-- Team D 要用 Perl + Mason 寫統計網頁
-</code></pre>
-
-<p>Server:</p>
-
-<pre><code>- Server01: 8.8.8.8 / 192.168.1.1
-- Server02: 192.168.1.2
-</code></pre>
-
-<p>Assume:</p>
-
-<pre><code>- 所有的服務都要有專屬網址
-- 所有的服務只能用80 port
-- domain name: jasoncheng.tw
-</code></pre>
-
-<figure class='code'><figcaption><span>在 server01 只要寫幾行code, 一切就幫你搞定</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">hostnameOnly</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>  <span class="nx">router</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// Team A</span>
-</span><span class='line'>    <span class="s1">&#39;jasoncheng.com/servlet&#39;</span><span class="o">:</span>   <span class="s1">&#39;server01:8081&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// Team B</span>
-</span><span class='line'>    <span class="s1">&#39;jasoncheng.tw&#39;</span><span class="o">:</span>            <span class="s1">&#39;server01:8082&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// Team C</span>
-</span><span class='line'>    <span class="s1">&#39;api.jasoncheng.tw&#39;</span><span class="o">:</span>        <span class="s1">&#39;server02:8083&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// Team C</span>
-</span><span class='line'>    <span class="s1">&#39;adm.jasoncheng.tw&#39;</span><span class="o">:</span>        <span class="s1">&#39;server02:8084&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// Team D </span>
-</span><span class='line'>    <span class="s1">&#39;adm.jasoncheng.tw/static&#39;</span><span class="o">:</span> <span class="s1">&#39;server02:8085&#39;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;http-proxy&quot;</span><span class="p">).</span><span class="nx">createServer</span><span class="p">(</span><span class="nx">options</span><span class="p">).</span><span class="nx">listen</span><span class="p">(</span><span class="mi">80</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>當然, 或許你會說 Nginx / Apache 本身也可以做到這些需求, 但不可否認, 人要趕流行不是嗎?
-那就用 NodeJS 囉! 這麼多人都說 <strong><em> The Next Big Thing is Node </em></strong> 了.</p>
-
-<p>今天, 不管開發人員要用哪些技術來寫網頁/API, 要用湯姆貓/阿帕契/引擎X當Server&#8230;&#8230;都沒差;
-難搞的系統管理者, 就可以趁機會跟同事們好好交朋友, 快速地幫程式開發人員, 弄一組專屬的 Demo 網址吧.</p>
-
-<figure class='code'><figcaption><span>Do It Now!!</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$npm</span> install http-proxy
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/17/httpresponsecache/">善用 HttpResponseCache</a></h1>
+      <h1 class="entry-title">善用 HttpResponseCache</h1>
     
     
       <p class="meta">
@@ -614,14 +98,14 @@ maybe you should override console object for this.</p>
 
 <time datetime="2012-07-17T21:16:00+08:00" pubdate data-updated="true">Jul 17<span>th</span>, 2012</time>
         
-         | <a href="/blog/2012/07/17/httpresponsecache/#disqus_thread">Comments</a>
+         | <a href="#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>之前寫 Android App 都要自己實作 Cache, 不管是圖片或者是API資料;</p>
+<div class="entry-content"><p>之前寫 Android App 都要自己實作 Cache, 不管是圖片或者是API資料;</p>
 
 <p>比如說: 打開程式後, 如果Local有Cache就先讀取Cache; 然後在暗地裡發送Request去更新圖片/API資料等&#8230;
 當有新的, 直接複寫本地端的緩存, 然後 notify refresh.  而且還要防止Cache太多, 要定時刪除舊的資料&#8230;.</p>
@@ -1009,84 +493,16 @@ maybe you should override console object for this.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/17/octopress-my-experience/">Octopress + Github 學習經驗</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">JasonCheng 17hado.com(@)gmail.com</span></span>
 
-<time datetime="2012-07-17T12:05:00+08:00" pubdate data-updated="true">Jul 17<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/07/17/octopress-my-experience/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>最近剛在學習使用 Octopress + Github, 把弄過幾次的經驗記錄下來.</p>
-
-<p>因為我會在兩台以上的電腦使用 octopress 寫文章, 但是看過一些文章後,</p>
-
-<p>覺得要在第N台電腦搞 <code>$git clone ..</code>這些設定, 太麻煩了.</p>
-
-<h3>使用 Dropbox 存放 Octopress 的資料(source..等)</h3>
-
-<p>當設定好 octopress <code>$rake install</code> 之後,
-就不要再操作 git 了; ex.<code>$git add . </code> or <code>$git add source</code>,</p>
-
-<p><strong><em> 不需要把 source 丟到 github 上面一樣可以運作 </em></strong></p>
-
-<p><img src="images/dropbox_octopress.png"></p>
-
-<p><img src="images/octopress_github_no_need_source.png"></p>
-
-<h3>Github上面只放_depoly的資料</h3>
-
-<figure class='code'><figcaption><span>每次要發佈只要</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$rake</span> generate
-</span><span class='line'><span class="nv">$rake</span> deploy
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/17/gson/">GSON - Google的兒子</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -1098,220 +514,50 @@ maybe you should override console object for this.</p>
   
 
 
-<time datetime="2012-07-17T00:31:00+08:00" pubdate data-updated="true">Jul 17<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/07/17/gson/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>在將近3年沒寫Android的狀況下, 最近卻因為工作的需求開始被要求重拾Android;
-都已經投向iOS陣營了..真是.
-不多說, 重新邊學邊寫也是件好事. 這篇文章就來當作第一炮吧..哈!!!</p>
-
-<p>3年前, 不知道Google是否已經有GSON這樣的東西(應該已經有了, 只是小弟太愚昧..呵), 要處理API返回的JSON, 都是透過以下方式</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="nf">TagData</span><span class="o">(</span><span class="n">JSONObject</span> <span class="n">obj</span><span class="o">){</span>
-</span><span class='line'>  <span class="k">try</span><span class="o">{</span>
-</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">serial</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="n">ApiConsts</span><span class="o">.</span><span class="na">TAG_SERIAL</span><span class="o">);</span>
-</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">title</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="n">ApiConsts</span><span class="o">.</span><span class="na">TAG_TITLE</span><span class="o">);</span>
-</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">type</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="n">ApiConsts</span><span class="o">.</span><span class="na">TAG_TYPE</span><span class="o">);</span>
-</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="na">optInt</span><span class="o">(</span><span class="n">ApiConsts</span><span class="o">.</span><span class="na">TAG_ID</span><span class="o">);</span>
-</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">num</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="na">optInt</span><span class="o">(</span><span class="n">ApiConsts</span><span class="o">.</span><span class="na">TAG_NUMBERS</span><span class="o">);</span>
-</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">func</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="n">ApiConsts</span><span class="o">.</span><span class="na">TAG_FUNC</span><span class="o">);</span>
-</span><span class='line'>  <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>如果改用GSON後, Code就乾淨許多; 不用在那邊getter來 setter去</h3>
-
-<figure class='code'><figcaption><span>datasource.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span><span class="s2">&quot;system&quot;</span><span class="o">:</span><span class="p">[</span>
-</span><span class='line'>  <span class="p">{</span><span class="s2">&quot;tag&quot;</span><span class="o">:</span><span class="s2">&quot;6&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;6&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="s2">&quot;pub&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;tagT&quot;</span><span class="o">:</span><span class="s2">&quot;詐騙集團&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;func&quot;</span><span class="o">:</span><span class="s2">&quot;0&quot;</span><span class="p">},</span>
-</span><span class='line'>  <span class="p">{</span><span class="s2">&quot;tag&quot;</span><span class="o">:</span><span class="s2">&quot;7&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;7&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="s2">&quot;pub&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;tagT&quot;</span><span class="o">:</span><span class="s2">&quot;信用卡業務&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;func&quot;</span><span class="o">:</span><span class="s2">&quot;0&quot;</span><span class="p">},...</span>
-</span><span class='line'>  <span class="p">]</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>TagObjMgr.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TagObjMgr</span> <span class="o">{</span>
-</span><span class='line'>  <span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">TagObj</span><span class="o">&gt;</span> <span class="n">system</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>@SerializedName 這個annotation 就是你的JSON Object的key</p>
-
-<figure class='code'><figcaption><span>TagObj.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TagObj</span> <span class="o">{</span>
-</span><span class='line'>  <span class="nd">@SerializedName</span><span class="o">(</span><span class="s">&quot;id&quot;</span><span class="o">)</span>
-</span><span class='line'>  <span class="kd">public</span> <span class="kt">int</span> <span class="n">id</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nd">@SerializedName</span><span class="o">(</span><span class="s">&quot;tag&quot;</span><span class="o">)</span>
-</span><span class='line'>  <span class="kd">public</span> <span class="kt">int</span> <span class="n">serial</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nd">@SerializedName</span><span class="o">(</span><span class="s">&quot;tagT&quot;</span><span class="o">)</span>
-</span><span class='line'>  <span class="kd">public</span> <span class="n">String</span> <span class="n">title</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>MainActiviy.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Gson</span> <span class="n">gson</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Gson</span><span class="o">();</span>
-</span><span class='line'><span class="n">TagObjMgr</span> <span class="n">response</span> <span class="o">=</span> <span class="n">gson</span><span class="o">.</span><span class="na">fromJson</span><span class="o">(</span><span class="n">jsonStr</span><span class="o">,</span> <span class="n">TagObjMgr</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-</span><span class='line'><span class="n">List</span><span class="o">&lt;</span><span class="n">TagObj</span><span class="o">&gt;</span> <span class="n">objs</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">system</span><span class="o">;</span>
-</span><span class='line'><span class="k">for</span><span class="o">(</span><span class="n">TagObj</span> <span class="nl">obj:</span> <span class="n">objs</span><span class="o">){</span>
-</span><span class='line'>  <span class="n">Log</span><span class="o">.</span><span class="na">i</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&quot;======&gt; &quot;</span> <span class="o">+</span> <span class="n">obj</span><span class="o">.</span><span class="na">title</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>既然Google都有這樣方便的工具了, <strong>幹嘛造一堆輪子</strong>, 能偷懶就偷懶吧!</p>
-
-<p><a href="http://code.google.com/p/google-gson/" title="Google GSON">GSON</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
+<time datetime="2012-07-17T21:16:00+08:00" pubdate data-updated="true">Jul 17<span>th</span>, 2012</time>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/16/too-many-open-files/">Too Many Open Files</a></h1>
-    
-    
-      <p class="meta">
-        
 
-
-
-
-
-
-
-
+<span class="categories">
   
+    <a class='category' href='/blog/categories/android/'>Android</a>, <a class='category' href='/blog/categories/httpresponsecache/'>HttpResponseCache</a>, <a class='category' href='/blog/categories/httpurlconnection/'>HttpURLConnection</a>, <a class='category' href='/blog/categories/java/'>Java</a>, <a class='category' href='/blog/categories/nodejs/'>NodeJS</a>
+  
+</span>
 
 
-<time datetime="2012-07-16T22:03:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/07/16/too-many-open-files/#disqus_thread">Comments</a>
-        
-      </p>
+    </p>
     
-  </header>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jasoncheng.tw/blog/2012/07/17/httpresponsecache/" data-via="jasoncheng" data-counturl="http://jasoncheng.tw/blog/2012/07/17/httpresponsecache/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/07/17/octopress-my-experience/" title="Previous Post: octopress + github 學習經驗">&laquo; octopress + github 學習經驗</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/07/19/node-http-proxy/" title="Next Post: NodeJS 好物 node-http-proxy">NodeJS 好物 node-http-proxy &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
 
-  <div class="entry-content"><p>最近常遇到 Too many open files 的錯誤訊息, 不管是 memcached / nodejs ..
-這跟Server上面的ulimit有關. 必須調整1024(預設)值.</p>
-
-<p>顯示目前限制</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ulimit</span> -a
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>編輯 /etc/pam.d/common-session, 加上</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>session required pam_limits.so
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>編輯 /etc/security/limits.conf</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>* soft nofile 51200
-</span><span class='line'>* hard nofile 51200
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>編輯 /etc/profile</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">ulimit</span> -SHn 51200
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>執行</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">ulimit</span> -SHn 51200
-</span></code></pre></td></tr></table></div></figure>
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
-  
-  
 
-
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
 <aside class="sidebar">
   
     <section>
@@ -1344,7 +590,7 @@ maybe you should override console object for this.</p>
 <section>
   <h1>Latest Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   <script type="text/javascript">
     $.domReady(function(){
@@ -1383,6 +629,7 @@ maybe you should override console object for this.</p>
   
 </aside>
 
+
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -1397,7 +644,10 @@ maybe you should override console object for this.</p>
       var disqus_shortname = 'jasoncheng';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://jasoncheng.tw/blog/2012/07/17/httpresponsecache/';
+        var disqus_url = 'http://jasoncheng.tw/blog/2012/07/17/httpresponsecache/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

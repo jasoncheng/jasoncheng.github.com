@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: JSON | 鄭傑森的 "扣"]]></title>
+  <link href="http://jasoncheng.tw/blog/categories/json/atom.xml" rel="self"/>
+  <link href="http://jasoncheng.tw/"/>
+  <updated>2013-11-25T19:20:28+08:00</updated>
+  <id>http://jasoncheng.tw/</id>
+  <author>
+    <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
+    <email><![CDATA[info@jasoncheng.tw]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[GSON - Google的兒子]]></title>
+    <link href="http://jasoncheng.tw/blog/2012/07/17/gson/"/>
+    <updated>2012-07-17T00:31:00+08:00</updated>
+    <id>http://jasoncheng.tw/blog/2012/07/17/gson</id>
+    <content type="html"><![CDATA[<p>在將近3年沒寫Android的狀況下, 最近卻因為工作的需求開始被要求重拾Android;
+都已經投向iOS陣營了..真是.
+不多說, 重新邊學邊寫也是件好事. 這篇文章就來當作第一炮吧..哈!!!</p>
+
+<p>3年前, 不知道Google是否已經有GSON這樣的東西(應該已經有了, 只是小弟太愚昧..呵), 要處理API返回的JSON, 都是透過以下方式</p>
+
+<p>``` java
+public TagData(JSONObject obj){
+  try{</p>
+
+<pre><code>this.serial = obj.getInt(ApiConsts.TAG_SERIAL);
+this.title = obj.getString(ApiConsts.TAG_TITLE);
+this.type = obj.getString(ApiConsts.TAG_TYPE);
+this.id = obj.optInt(ApiConsts.TAG_ID);
+this.num = obj.optInt(ApiConsts.TAG_NUMBERS);
+this.func = obj.getInt(ApiConsts.TAG_FUNC);
+</code></pre>
+
+<p>  }catch(Exception e){}
+}
+```</p>
+
+<h3>如果改用GSON後, Code就乾淨許多; 不用在那邊getter來 setter去</h3>
+
+<p>``` javascript datasource.js
+{"system":[
+  {"tag":"6",</p>
+
+<pre><code>"id":"6",
+"type":"pub",
+"tagT":"詐騙集團",
+"func":"0"},
+</code></pre>
+
+<p>  {"tag":"7",</p>
+
+<pre><code>"id":"7",
+"type":"pub",
+"tagT":"信用卡業務",
+"func":"0"},...
+</code></pre>
+
+<p>  ]
+}
+```</p>
+
+<p><code>java TagObjMgr.java
+public class TagObjMgr {
+  public List&lt;TagObj&gt; system;
+}
+</code></p>
+
+<p>@SerializedName 這個annotation 就是你的JSON Object的key
+``` java  TagObj.java
+public class TagObj {
+  @SerializedName("id")
+  public int id;</p>
+
+<p>  @SerializedName("tag")
+  public int serial;</p>
+
+<p>  @SerializedName("tagT")
+  public String title;
+}
+```</p>
+
+<p><code>java MainActiviy.java
+Gson gson = new Gson();
+TagObjMgr response = gson.fromJson(jsonStr, TagObjMgr.class);
+List&lt;TagObj&gt; objs = response.system;
+for(TagObj obj: objs){
+  Log.i(TAG, "======&gt; " + obj.title);
+}
+</code></p>
+
+<p>既然Google都有這樣方便的工具了, <strong>幹嘛造一堆輪子</strong>, 能偷懶就偷懶吧!</p>
+
+<p><a href="http://code.google.com/p/google-gson/" title="Google GSON">GSON</a></p>
+]]></content>
+  </entry>
+  
+</feed>
