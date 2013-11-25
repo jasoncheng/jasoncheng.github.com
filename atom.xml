@@ -1,0 +1,798 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[鄭傑森的 "扣"]]></title>
+  <link href="http://jasoncheng.tw/atom.xml" rel="self"/>
+  <link href="http://jasoncheng.tw/"/>
+  <updated>2012-07-24T23:46:06+08:00</updated>
+  <id>http://jasoncheng.tw/</id>
+  <author>
+    <name><![CDATA[JasonCheng 17hado.com(@)gmail.com]]></name>
+    <email><![CDATA[info@jasoncheng.tw]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[幫你的 Cacti 加個監控告警機制]]></title>
+    <link href="http://jasoncheng.tw/blog/2012/07/24/new-node-module-cacti-host-updown-monitor/"/>
+    <updated>2012-07-24T22:47:00+08:00</updated>
+    <id>http://jasoncheng.tw/blog/2012/07/24/new-node-module-cacti-host-updown-monitor</id>
+    <content type="html"><![CDATA[<p>玩了幾個月的 Node, 而且昨晚睡不著, 裝了 cacti 起來玩玩 (<strong><em> 是的, 我很宅 </em></strong>),
+今天撞到頭的想把自己寫的爛東西  <a href="http://search.npmjs.org/#/cacti-host-updown-monitor">cacti-host-updown-monitor</a>, 分享一下!</p>
+
+<p>畢竟用的 node_modules 好一陣子了, 從來也沒用Github 來 OpenSource (羞~~這樣也叫 OpenSource&#8230; <strong><em> 指 </em></strong>) .
+趁這個機會, 順便來玩玩 npm 發佈.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm adduser <span class="o">(</span>建立你的帳號<span class="o">)</span>
+</span><span class='line'><span class="nv">$ </span>npm publish <span class="o">(</span>發佈 Node Module 到 NPM Registry<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>或許你會說, <a href="http://www.cacti.net/">cacti</a> 不是已經有很多 plugin 了; 比如說, <code>thold</code> 之類的 Thresholds / Alarms 機制了,
+是的, 沒錯; <strong><em> But i don&#8217;t care </em></strong>, 這部分我不想裝 plugin, 我只想用自己寫的&#8230;哈!</p>
+
+<p>題外話: 現在回想起來, 比起 cacti 以前在 TTN 弄的那套 Device Monitor 還真好用(誤)&#8230;.但這都是過去了&#8230;過去了&#8230;</p>
+
+<h3>適用對象</h3>
+
+<pre><code>- 白老鼠
+- 不怕死的勇者
+- 有使用 cacti 做 device monitor 的人.
+</code></pre>
+
+<h3>適用的cacti版本</h3>
+
+<pre><code>- ALL
+</code></pre>
+
+<h3>唯一的用途</h3>
+
+<pre><code>- 當監控的Device Down, 就會發出告警信件通知
+</code></pre>
+
+<figure class='code'><figcaption><span>安裝 </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm install cacti-host-updown-monitor
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>主程式沒有幾行扣, 呵呵&#8230;見笑了!</p>
+
+<div><script src='https://gist.github.com/3170658.js?file='></script>
+<noscript><pre><code>global.conf = require(&quot;./config&quot;);
+var flow = require(&quot;flow&quot;)
+  , db   = require(&quot;./model/Model.js&quot;)
+  , mail = require(&quot;mailer&quot;)
+  , downServers = {};
+
+function checkUpDown(){
+  flow.exec(
+    function(){
+      db.Host.all().success(this).error(function(err){
+        console.log(err.message);
+        process.exit(1);
+      });
+    },
+
+    function(hosts){
+      for(var idx in hosts){
+        var host = hosts[idx];
+        var mailConf = conf.mail;
+        mailConf.body = host.getTextStatus();
+        mailConf.subject = host.description + &quot; status update&quot;;
+        
+        if(!host.isServerUp()){
+          // if still down and status not update, no need to alarm again
+          if(downServers[host.id] &amp;&amp; downServers[host.id] == host.status){
+            continue;
+          }
+          // add to container
+          downServers[host.id] = host.status;
+          // send email
+          mail.send(mailConf, this.MULTI());
+        } else if(downServers[host.id]) { // server first time up , need to notify
+          // remove from container
+          delete downServers[host.id];
+          // send email
+          mail.send(mailConf, this.MULTI());
+        }
+      }
+    },
+
+    function(results){
+      for(var idx in results){
+        if(results[idx][0]){
+          console.dir(results[idx][0]);
+        }
+      }
+    }
+  );
+}
+
+checkUpDown();
+setInterval(checkUpDown, conf.hostCheckerTimer);</code></pre></noscript></div>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[NodeJS 好物 node-http-proxy]]></title>
+    <link href="http://jasoncheng.tw/blog/2012/07/19/node-http-proxy/"/>
+    <updated>2012-07-19T23:50:00+08:00</updated>
+    <id>http://jasoncheng.tw/blog/2012/07/19/node-http-proxy</id>
+    <content type="html"><![CDATA[<p>今天要介紹一個超棒的 node_module, 小弟用了一陣子了, 覺得好用, 推薦給大家;
+如果你的角色是 Server Administrator 的話,
+請繼續往下看, 希望這篇簡短地介紹, 會增加你工作上的效率 (我到底在扯什麼&#8230;).</p>
+
+<h3>重點是, 把 port 80, 交給 NodeJS 吧</h3>
+
+<p>公司 R&amp;D 狀況:</p>
+
+<pre><code>- Team A 寫 Java servlet, 提供一些啥鬼的WebService
+- Team B 負責用 apache + PHP 寫 EndUser 網頁
+- Team C 負責用 NodeJS 寫開放的API
+- Team D 要用 nginx + php5-fpm 來寫後台控管網頁
+- Team D 要用 Perl + Mason 寫統計網頁
+</code></pre>
+
+<p>Server:</p>
+
+<pre><code>- Server01: 8.8.8.8 / 192.168.1.1
+- Server02: 192.168.1.2
+</code></pre>
+
+<p>Assume:</p>
+
+<pre><code>- 所有的服務都要有專屬網址
+- 所有的服務只能用80 port
+- domain name: jasoncheng.tw
+</code></pre>
+
+<figure class='code'><figcaption><span>在 server01 只要寫幾行code, 一切就幫你搞定</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">hostnameOnly</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">router</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// Team A</span>
+</span><span class='line'>    <span class="s1">&#39;jasoncheng.com/servlet&#39;</span><span class="o">:</span>   <span class="s1">&#39;server01:8081&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Team B</span>
+</span><span class='line'>    <span class="s1">&#39;jasoncheng.tw&#39;</span><span class="o">:</span>            <span class="s1">&#39;server01:8082&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Team C</span>
+</span><span class='line'>    <span class="s1">&#39;api.jasoncheng.tw&#39;</span><span class="o">:</span>        <span class="s1">&#39;server02:8083&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Team C</span>
+</span><span class='line'>    <span class="s1">&#39;adm.jasoncheng.tw&#39;</span><span class="o">:</span>        <span class="s1">&#39;server02:8084&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Team D </span>
+</span><span class='line'>    <span class="s1">&#39;adm.jasoncheng.tw/static&#39;</span><span class="o">:</span> <span class="s1">&#39;server02:8085&#39;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;http-proxy&quot;</span><span class="p">).</span><span class="nx">createServer</span><span class="p">(</span><span class="nx">options</span><span class="p">).</span><span class="nx">listen</span><span class="p">(</span><span class="mi">80</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>當然, 或許你會說 Nginx / Apache 本身也可以做到這些需求, 但不可否認, 人要趕流行不是嗎?
+那就用 NodeJS 囉! 這麼多人都說 <strong><em> The Next Big Thing is Node </em></strong> 了.</p>
+
+<p>今天, 不管開發人員要用哪些技術來寫網頁/API, 要用湯姆貓/阿帕契/引擎X當Server&#8230;&#8230;都沒差;
+難搞的系統管理者, 就可以趁機會跟同事們好好交朋友, 快速地幫程式開發人員, 弄一組專屬的 Demo 網址吧.</p>
+
+<figure class='code'><figcaption><span>Do It Now!!</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$npm</span> install http-proxy
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[善用 HttpResponseCache]]></title>
+    <link href="http://jasoncheng.tw/blog/2012/07/17/httpresponsecache/"/>
+    <updated>2012-07-17T21:16:00+08:00</updated>
+    <id>http://jasoncheng.tw/blog/2012/07/17/httpresponsecache</id>
+    <content type="html"><![CDATA[<p>之前寫 Android App 都要自己實作 Cache, 不管是圖片或者是API資料;</p>
+
+<p>比如說: 打開程式後, 如果Local有Cache就先讀取Cache; 然後在暗地裡發送Request去更新圖片/API資料等&#8230;
+當有新的, 直接複寫本地端的緩存, 然後 notify refresh.  而且還要防止Cache太多, 要定時刪除舊的資料&#8230;.</p>
+
+<p><strong><em> 太累了 </em></strong></p>
+
+<h3>使用的好處</h3>
+
+<pre><code>- 節省用戶端的電力 (因為可以少掉很多Internet Connection)
+- 省下龐大的頻寬費用 (因為對Server來說, 當收到 If-Modified-Since, 如果沒更新, Server端只要回應 304即可)
+- 開發者不用自己再做 Cache 機制了.
+- 最好的事!! 如果你本身不是用 HttpClient, HttpDefaultClient..., 而是用 HttpURLConnection的話, 你根本不用改本來的 Code.
+</code></pre>
+
+<p>接下來, 實作吧!! 其實很簡單, 你不必改寫你的任何Code,
+你只要 Application層, 把它啓用就好了; 剩下的一切 HttpURLConnection 會幫你處理</p>
+
+<figure class='code'><figcaption><span> (ResponseApplication.java)</span> <a href='http://jasoncheng.tw/downloads/code/ResponseCache/ResponseApplication.java'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">testresponsecache</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.app.Application</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.util.Log</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ResponseApplication</span> <span class="kd">extends</span> <span class="n">Application</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">();</span>
+</span><span class='line'>    <span class="k">new</span> <span class="nf">Thread</span><span class="o">(){</span>
+</span><span class='line'>      <span class="nd">@Override</span>
+</span><span class='line'>      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">enableHttpResponseCache</span><span class="o">();</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>    <span class="o">}.</span><span class="na">start</span><span class="o">();</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">enableHttpResponseCache</span><span class="o">(){</span>
+</span><span class='line'>    <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>      <span class="kt">long</span> <span class="n">httpCacheSize</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="o">;</span>
+</span><span class='line'>      <span class="n">File</span> <span class="n">httpCacheDir</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">getCacheDir</span><span class="o">(),</span> <span class="s">&quot;http&quot;</span><span class="o">);</span>
+</span><span class='line'>      <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&quot;android.net.http.HttpResponseCache&quot;</span><span class="o">)</span>
+</span><span class='line'>        <span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&quot;install&quot;</span><span class="o">,</span> <span class="n">File</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kt">long</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'>        <span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span> <span class="n">httpCacheDir</span><span class="o">,</span> <span class="n">httpCacheSize</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">&quot;===&gt;&quot;</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">e</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span> (MainActivity.java)</span> <a href='http://jasoncheng.tw/downloads/code/ResponseCache/MainActivity.java'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">testresponsecache</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.io.BufferedReader</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.io.InputStream</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.io.InputStreamReader</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.net.HttpURLConnection</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.net.URL</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.os.AsyncTask</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.os.Bundle</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.annotation.SuppressLint</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.app.Activity</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.graphics.Bitmap</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.graphics.BitmapFactory</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.util.Log</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.view.View</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.view.View.OnClickListener</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.widget.Button</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.widget.ImageView</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainActivity</span> <span class="kd">extends</span> <span class="n">Activity</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">TAG</span> <span class="o">=</span> <span class="n">getClass</span><span class="o">().</span><span class="na">getSimpleName</span><span class="o">();</span>
+</span><span class='line'>  <span class="n">ImageView</span> <span class="n">img</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">Button</span> <span class="n">msg</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nd">@Override</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">img</span> <span class="o">=</span> <span class="o">(</span><span class="n">ImageView</span><span class="o">)</span> <span class="k">this</span><span class="o">.</span><span class="na">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">img</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">msg</span> <span class="o">=</span> <span class="o">(</span><span class="n">Button</span><span class="o">)</span> <span class="k">this</span><span class="o">.</span><span class="na">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">msg</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">msg</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>      <span class="nd">@Override</span>
+</span><span class='line'>      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="n">View</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">new</span> <span class="nf">InternetTask</span><span class="o">().</span><span class="na">execute</span><span class="o">();</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>    <span class="o">});</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nd">@SuppressLint</span><span class="o">(</span><span class="s">&quot;NewApi&quot;</span><span class="o">)</span>
+</span><span class='line'>  <span class="kd">class</span> <span class="nc">InternetTask</span> <span class="kd">extends</span> <span class="n">AsyncTask</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">,</span> <span class="n">Boolean</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Bitmap</span> <span class="n">bitmap</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">jsonStr</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@SuppressLint</span><span class="o">(</span><span class="s">&quot;NewApi&quot;</span><span class="o">)</span>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onPostExecute</span><span class="o">(</span><span class="n">Boolean</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>      <span class="kd">super</span><span class="o">.</span><span class="na">onPostExecute</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+</span><span class='line'>      <span class="n">img</span><span class="o">.</span><span class="na">setImageBitmap</span><span class="o">(</span><span class="n">bitmap</span><span class="o">);</span>
+</span><span class='line'>      <span class="n">msg</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">jsonStr</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="n">Boolean</span> <span class="nf">doInBackground</span><span class="o">(</span><span class="n">String</span><span class="o">...</span> <span class="n">params</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>      <span class="c1">// Test download image</span>
+</span><span class='line'>      <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">URL</span> <span class="n">url</span> <span class="o">=</span> <span class="k">new</span> <span class="n">URL</span><span class="o">(</span><span class="s">&quot;http://jasoncheng.tw/1.png&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">HttpURLConnection</span> <span class="n">conn</span> <span class="o">=</span> <span class="o">(</span><span class="n">HttpURLConnection</span><span class="o">)</span> <span class="o">(</span><span class="n">url</span><span class="o">.</span><span class="na">openConnection</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">conn</span><span class="o">.</span><span class="na">connect</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">InputStream</span> <span class="n">is</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">BitmapFactory</span><span class="o">.</span><span class="na">Options</span> <span class="n">ops</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BitmapFactory</span><span class="o">.</span><span class="na">Options</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">bitmap</span> <span class="o">=</span> <span class="n">BitmapFactory</span><span class="o">.</span><span class="na">decodeStream</span><span class="o">(</span><span class="n">is</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="n">ops</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">is</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">conn</span><span class="o">.</span><span class="na">disconnect</span><span class="o">();</span>
+</span><span class='line'>      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">e</span><span class="o">);</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// Test download JSON data</span>
+</span><span class='line'>      <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">URL</span> <span class="n">url</span> <span class="o">=</span> <span class="k">new</span> <span class="n">URL</span><span class="o">(</span><span class="s">&quot;http://jasoncheng.tw/1.json&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">HttpURLConnection</span> <span class="n">conn</span> <span class="o">=</span> <span class="o">(</span><span class="n">HttpURLConnection</span><span class="o">)</span> <span class="o">(</span><span class="n">url</span><span class="o">.</span><span class="na">openConnection</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">conn</span><span class="o">.</span><span class="na">connect</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">BufferedReader</span> <span class="n">reader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">conn</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">(),</span> <span class="s">&quot;UTF-8&quot;</span><span class="o">));</span>
+</span><span class='line'>        <span class="n">jsonStr</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">InputStream</span> <span class="n">is</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">is</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">conn</span><span class="o">.</span><span class="na">disconnect</span><span class="o">();</span>
+</span><span class='line'>      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">e</span><span class="o">);</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>      <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>接下來用 NodeJS 寫個簡單的Static File Server</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;express&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">.</span><span class="nx">createServer</span><span class="p">();</span>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">logger</span><span class="p">());</span>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="kr">static</span><span class="p">(</span><span class="nx">__dirname</span> <span class="o">+</span> <span class="s1">&#39;/public&#39;</span><span class="p">));</span>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">4000</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>每個Request都會產生兩隻檔案, 一個是實體檔案, 一個是 HTTP Header 資料</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># cd /data/data/com.example.testresponsecache/cache/http</span>
+</span><span class='line'><span class="c"># ls -l</span>
+</span><span class='line'>-rw------- u0_a48   u0_a48        345 2012-07-17 23:07 20ebbdb944f2be7d9ea96466bafe98a5.0
+</span><span class='line'>-rw------- u0_a48   u0_a48         42 2012-07-17 23:07 20ebbdb944f2be7d9ea96466bafe98a5.1
+</span><span class='line'>-rw------- u0_a48   u0_a48        321 2012-07-17 23:07 7abaca174bffb497cea054db94961804.0
+</span><span class='line'>-rw------- u0_a48   u0_a48      11856 2012-07-17 23:07 7abaca174bffb497cea054db94961804.1
+</span><span class='line'>-rw------- u0_a48   u0_a48        163 2012-07-17 23:07 journal
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>整個的運作的關鍵就在 Last-Modified</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># cat 20ebbdb944f2be7d9ea96466bafe98a5.0</span>
+</span><span class='line'>http://jasoncheng.tw/1.json
+</span><span class='line'>GET
+</span><span class='line'>0
+</span><span class='line'>HTTP/1.1 200 OK
+</span><span class='line'>9
+</span><span class='line'>Connection: keep-alive
+</span><span class='line'>Content-Encoding: gzip
+</span><span class='line'>Content-Type: text/plain; <span class="nv">charset</span><span class="o">=</span>utf-8
+</span><span class='line'>Date: Tue, 17 Jul 2012 15:01:31 GMT
+</span><span class='line'>Last-Modified: Tue, 17 Jul 2012 13:24:14 GMT
+</span><span class='line'>Server: nginx/0.7.65
+</span><span class='line'>Transfer-Encoding: chunked
+</span><span class='line'>X-Android-Received-Millis: 1342537658233
+</span><span class='line'>X-Android-Sent-Millis: 1342537658210
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>第1次執行</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>- <span class="o">[</span>Tue, 17 Jul 2012 15:14:18 GMT<span class="o">]</span> <span class="s2">&quot;GET /1.png HTTP/1.1&quot;</span> 200 11856 <span class="s2">&quot;-&quot;</span> <span class="s2">&quot;Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)&quot;</span>
+</span><span class='line'>- <span class="o">[</span>Tue, 17 Jul 2012 15:14:20 GMT<span class="o">]</span> <span class="s2">&quot;GET /1.json HTTP/1.1&quot;</span> 200 22 <span class="s2">&quot;-&quot;</span> <span class="s2">&quot;Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>第2次執行, Server 好輕鬆, 只要回304就好了, 省下多少頻寬阿</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>- <span class="o">[</span>Tue, 17 Jul 2012 15:14:36 GMT<span class="o">]</span> <span class="s2">&quot;GET /1.png HTTP/1.1&quot;</span> 304 - <span class="s2">&quot;-&quot;</span> <span class="s2">&quot;Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)&quot;</span>
+</span><span class='line'>- <span class="o">[</span>Tue, 17 Jul 2012 15:14:36 GMT<span class="o">]</span> <span class="s2">&quot;GET /1.json HTTP/1.1&quot;</span> 304 - <span class="s2">&quot;-&quot;</span> <span class="s2">&quot;Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>修改1.json檔案後, Last-modified 改變了, 所以重新抓一次, 所以 Status Code 變回 200 Okay!</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>root@ubuntu:/var/www/html/jasoncheng/static_test# node web.js | grep -v favicon
+</span><span class='line'>- <span class="o">[</span>Tue, 17 Jul 2012 15:17:30 GMT<span class="o">]</span> <span class="s2">&quot;GET /1.png HTTP/1.1&quot;</span> 304 - <span class="s2">&quot;-&quot;</span> <span class="s2">&quot;Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)&quot;</span>
+</span><span class='line'>- <span class="o">[</span>Tue, 17 Jul 2012 15:17:30 GMT<span class="o">]</span> <span class="s2">&quot;GET /1.json HTTP/1.1&quot;</span> 200 17 <span class="s2">&quot;-&quot;</span> <span class="s2">&quot;Dalvik/1.6.0 (Linux; U; Android 4.1; sdk Build/JRN83C)&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>測試結果</h3>
+
+<pre><code>- Okay: 關閉網路後, 圖片/JSON 資料會自己返回 Local Cache 的資料 (所以用戶不會感覺網路斷線了..嘿)
+- Okay: 資料更新後, JSON會自動更新
+- Okay: 檔案沒改變的條件下, Server 只回應304
+</code></pre>
+
+<h3>測試後的問題</h3>
+
+<pre><code>- Client 端必須是 Android 4.0 以後版本才有支援 (真是XD...我的NexusOne 沒辦法升到4.0啦~~~)
+- Server 上的圖片修改後, Client端並不會即時更新; 懶得翻 Android Source Code了..有興趣的朋友, 再去追 (不過也沒差吧, 應該沒有人大頭照常換的吧)
+- 如果遇到特殊的 port number (非80 port), cache不會生效.
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[octopress + github 學習經驗]]></title>
+    <link href="http://jasoncheng.tw/blog/2012/07/17/octopress-my-experience/"/>
+    <updated>2012-07-17T12:05:00+08:00</updated>
+    <id>http://jasoncheng.tw/blog/2012/07/17/octopress-my-experience</id>
+    <content type="html"><![CDATA[<p>最近剛在學習使用 Octopress + Github, 把弄過幾次的經驗記錄下來.</p>
+
+<p>因為我會在兩台以上的電腦使用 octopress 寫文章, 但是看過一些文章後,</p>
+
+<p>覺得要在第N台電腦搞 <code>$git clone ..</code>這些設定, 太麻煩了.</p>
+
+<h3>使用 Dropbox 存放 Octopress 的資料(source..等)</h3>
+
+<p>當設定好 octopress <code>$rake install</code> 之後,
+就不要再操作 git 了; ex.<code>$git add . </code> or <code>$git add source</code>,</p>
+
+<p><strong><em> 不需要把 source 丟到 github 上面一樣可以運作 </em></strong></p>
+
+<p><img src="images/dropbox_octopress.png"></p>
+
+<p><img src="images/octopress_github_no_need_source.png"></p>
+
+<h3>Github上面只放_depoly的資料</h3>
+
+<figure class='code'><figcaption><span>每次要發佈只要</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$rake</span> generate
+</span><span class='line'><span class="nv">$rake</span> deploy
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[GSON - Google的兒子]]></title>
+    <link href="http://jasoncheng.tw/blog/2012/07/17/gson/"/>
+    <updated>2012-07-17T00:31:00+08:00</updated>
+    <id>http://jasoncheng.tw/blog/2012/07/17/gson</id>
+    <content type="html"><![CDATA[<p>在將近3年沒寫Android的狀況下, 最近卻因為工作的需求開始被要求重拾Android;
+都已經投向iOS陣營了..真是.
+不多說, 重新邊學邊寫也是件好事. 這篇文章就來當作第一炮吧..哈!!!</p>
+
+<p>3年前, 不知道Google是否已經有GSON這樣的東西(應該已經有了, 只是小弟太愚昧..呵), 要處理API返回的JSON, 都是透過以下方式</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="nf">TagData</span><span class="o">(</span><span class="n">JSONObject</span> <span class="n">obj</span><span class="o">){</span>
+</span><span class='line'>  <span class="k">try</span><span class="o">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">serial</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="n">ApiConsts</span><span class="o">.</span><span class="na">TAG_SERIAL</span><span class="o">);</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">title</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="n">ApiConsts</span><span class="o">.</span><span class="na">TAG_TITLE</span><span class="o">);</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">type</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="n">ApiConsts</span><span class="o">.</span><span class="na">TAG_TYPE</span><span class="o">);</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="na">optInt</span><span class="o">(</span><span class="n">ApiConsts</span><span class="o">.</span><span class="na">TAG_ID</span><span class="o">);</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">num</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="na">optInt</span><span class="o">(</span><span class="n">ApiConsts</span><span class="o">.</span><span class="na">TAG_NUMBERS</span><span class="o">);</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">func</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="n">ApiConsts</span><span class="o">.</span><span class="na">TAG_FUNC</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>如果改用GSON後, Code就乾淨許多; 不用在那邊getter來 setter去</h3>
+
+<figure class='code'><figcaption><span>datasource.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span><span class="s2">&quot;system&quot;</span><span class="o">:</span><span class="p">[</span>
+</span><span class='line'>  <span class="p">{</span><span class="s2">&quot;tag&quot;</span><span class="o">:</span><span class="s2">&quot;6&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;6&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="s2">&quot;pub&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;tagT&quot;</span><span class="o">:</span><span class="s2">&quot;詐騙集團&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;func&quot;</span><span class="o">:</span><span class="s2">&quot;0&quot;</span><span class="p">},</span>
+</span><span class='line'>  <span class="p">{</span><span class="s2">&quot;tag&quot;</span><span class="o">:</span><span class="s2">&quot;7&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;7&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="s2">&quot;pub&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;tagT&quot;</span><span class="o">:</span><span class="s2">&quot;信用卡業務&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;func&quot;</span><span class="o">:</span><span class="s2">&quot;0&quot;</span><span class="p">},...</span>
+</span><span class='line'>  <span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>TagObjMgr.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TagObjMgr</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">TagObj</span><span class="o">&gt;</span> <span class="n">system</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>@SerializedName 這個annotation 就是你的JSON Object的key</p>
+
+<figure class='code'><figcaption><span>TagObj.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TagObj</span> <span class="o">{</span>
+</span><span class='line'>  <span class="nd">@SerializedName</span><span class="o">(</span><span class="s">&quot;id&quot;</span><span class="o">)</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">int</span> <span class="n">id</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nd">@SerializedName</span><span class="o">(</span><span class="s">&quot;tag&quot;</span><span class="o">)</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">int</span> <span class="n">serial</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nd">@SerializedName</span><span class="o">(</span><span class="s">&quot;tagT&quot;</span><span class="o">)</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="n">String</span> <span class="n">title</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>MainActiviy.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Gson</span> <span class="n">gson</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Gson</span><span class="o">();</span>
+</span><span class='line'><span class="n">TagObjMgr</span> <span class="n">response</span> <span class="o">=</span> <span class="n">gson</span><span class="o">.</span><span class="na">fromJson</span><span class="o">(</span><span class="n">jsonStr</span><span class="o">,</span> <span class="n">TagObjMgr</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span><span class='line'><span class="n">List</span><span class="o">&lt;</span><span class="n">TagObj</span><span class="o">&gt;</span> <span class="n">objs</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">system</span><span class="o">;</span>
+</span><span class='line'><span class="k">for</span><span class="o">(</span><span class="n">TagObj</span> <span class="nl">obj:</span> <span class="n">objs</span><span class="o">){</span>
+</span><span class='line'>  <span class="n">Log</span><span class="o">.</span><span class="na">i</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&quot;======&gt; &quot;</span> <span class="o">+</span> <span class="n">obj</span><span class="o">.</span><span class="na">title</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>既然Google都有這樣方便的工具了, <strong>幹嘛造一堆輪子</strong>, 能偷懶就偷懶吧!</p>
+
+<p><a href="http://code.google.com/p/google-gson/" title="Google GSON">GSON</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Too many open files]]></title>
+    <link href="http://jasoncheng.tw/blog/2012/07/16/too-many-open-files/"/>
+    <updated>2012-07-16T22:03:00+08:00</updated>
+    <id>http://jasoncheng.tw/blog/2012/07/16/too-many-open-files</id>
+    <content type="html"><![CDATA[<p>最近常遇到 Too many open files 的錯誤訊息, 不管是 memcached / nodejs ..
+這跟Server上面的ulimit有關. 必須調整1024(預設)值.</p>
+
+<p>顯示目前限制</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ulimit</span> -a
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>編輯 /etc/pam.d/common-session, 加上</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>session required pam_limits.so
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>編輯 /etc/security/limits.conf</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>* soft nofile 51200
+</span><span class='line'>* hard nofile 51200
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>編輯 /etc/profile</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">ulimit</span> -SHn 51200
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>執行</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">ulimit</span> -SHn 51200
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+</feed>
