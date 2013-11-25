@@ -1,0 +1,77 @@
+---
+layout: post
+title: "GSON - Google的兒子"
+date: 2012-07-17 00:31
+comments: true
+categories: [Android, JSON, GSON, parser, Java]
+---
+在將近3年沒寫Android的狀況下, 最近卻因為工作的需求開始被要求重拾Android; 
+都已經投向iOS陣營了..真是.
+不多說, 重新邊學邊寫也是件好事. 這篇文章就來當作第一炮吧..哈!!!
+
+3年前, 不知道Google是否已經有GSON這樣的東西(應該已經有了, 只是小弟太愚昧..呵), 要處理API返回的JSON, 都是透過以下方式
+
+``` java 
+public TagData(JSONObject obj){
+  try{
+    this.serial = obj.getInt(ApiConsts.TAG_SERIAL);
+    this.title = obj.getString(ApiConsts.TAG_TITLE);
+    this.type = obj.getString(ApiConsts.TAG_TYPE);
+    this.id = obj.optInt(ApiConsts.TAG_ID);
+    this.num = obj.optInt(ApiConsts.TAG_NUMBERS);
+    this.func = obj.getInt(ApiConsts.TAG_FUNC);
+  }catch(Exception e){}
+}
+```
+
+### 如果改用GSON後, Code就乾淨許多; 不用在那邊getter來 setter去 ###
+
+
+``` javascript datasource.js
+{"system":[
+  {"tag":"6",
+    "id":"6",
+    "type":"pub",
+    "tagT":"詐騙集團",
+    "func":"0"},
+  {"tag":"7",
+    "id":"7",
+    "type":"pub",
+    "tagT":"信用卡業務",
+    "func":"0"},...
+  ]
+}
+```
+
+``` java TagObjMgr.java
+public class TagObjMgr {
+  public List<TagObj> system;
+}
+```
+
+@SerializedName 這個annotation 就是你的JSON Object的key
+``` java  TagObj.java
+public class TagObj {
+  @SerializedName("id")
+  public int id;
+
+  @SerializedName("tag")
+  public int serial;
+
+  @SerializedName("tagT")
+  public String title;
+}
+```
+
+``` java MainActiviy.java
+Gson gson = new Gson();
+TagObjMgr response = gson.fromJson(jsonStr, TagObjMgr.class);
+List<TagObj> objs = response.system;
+for(TagObj obj: objs){
+  Log.i(TAG, "======> " + obj.title);
+}
+```
+
+既然Google都有這樣方便的工具了, **幹嘛造一堆輪子**, 能偷懶就偷懶吧! 
+
+[GSON](http://code.google.com/p/google-gson/ "Google GSON")
