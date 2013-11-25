@@ -78,7 +78,7 @@ end script
 ```
 
 ### prevent use JSON.parse / JSON.stringify ###
-In my experience, after your node run about few days(arround handle 20M requests), 
+In my experience, after your node run about few days(approximate handle 20M requests), 
 if you use those two method on frequently request, 
 100% i can sure that your node process will reach 100% CPU usage and finally can't handle any request/response.
 
